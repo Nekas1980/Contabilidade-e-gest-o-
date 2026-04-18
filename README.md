@@ -1,1 +1,19 @@
-# Contabilidade-e-gest-o-
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>Serviços de Contabilidade</title>
+    <style>
+        body { font-family: sans-serif; text-align: center; padding: 50px; }
+        h1 { color: #2c3e50; }
+        .card { border: 1px solid #ddd; padding: 20px; border-radius: 10px; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>Gestão e Contabilidade</h1>
+        <p>Bem-vindo ao site da [Nome da Amiga].</p>
+        <p>Serviços profissionais de consultoria e gestão financeira.</p>
+    </div>
+</body>
+</html>
