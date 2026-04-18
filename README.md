@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+i<!DOCTYPE html>
 <html lang="pt">
 <head>
     <meta charset="UTF-8">
@@ -12,7 +12,7 @@
 <body>
     <div class="card">
         <h1>Gestão e Contabilidade</h1>
-        <p>Bem-vindo ao site da [Nome da Amiga].</p>
+        <p>Bem-vindo ao site da [ctcontabilidadeegestao].</p>
         <p>Serviços profissionais de consultoria e gestão financeira.</p>
     </div>
 </body>
