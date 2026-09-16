@@ -1,8 +1,8 @@
 # CT Contabilidade e Gestão
 
-Website institucional desenvolvido para utilização real por uma profissional da área de contabilidade e gestão.
+Projeto digital em evolução para utilização real por uma profissional da área de contabilidade e gestão e, em paralelo, caso de estudo/portefólio em desenvolvimento web, PostgreSQL e segurança aplicacional.
 
-O projeto começou como um cartão de visita digital simples e está a ser evoluído para uma presença online profissional, responsiva, credível e orientada ao contacto, com comunicação adequada ao contexto profissional da contabilidade.
+O projeto começou como um cartão de visita digital simples. Está a ser transformado, de forma incremental, numa presença online profissional e numa arquitetura preparada para futura operação interna segura.
 
 ## Estado atual
 
@@ -14,45 +14,116 @@ redesign-profissional
 
 A branch `main` mantém a versão anterior até conclusão da revisão e validação do conteúdo com a contabilista.
 
-Consulte também:
+Consulte:
 
-- [`PROJECT_STATUS.md`](PROJECT_STATUS.md) — estado atual e checklist.
-- [`ROADMAP.md`](ROADMAP.md) — evolução planeada.
-- [`docs/01_ARQUITETURA_E_METODOS.md`](docs/01_ARQUITETURA_E_METODOS.md) — arquitetura, decisões técnicas e métodos usados.
-- [`docs/02_GUIA_ESTUDO.md`](docs/02_GUIA_ESTUDO.md) — manual de estudo baseado no código real.
-- [`docs/03_CURRICULO_E_PORTFOLIO.md`](docs/03_CURRICULO_E_PORTFOLIO.md) — apresentação do projeto em CV, GitHub, LinkedIn e entrevistas.
-- [`docs/04_PUBLICACAO_E_CONFORMIDADE.md`](docs/04_PUBLICACAO_E_CONFORMIDADE.md) — preparação para utilização profissional.
-- [`docs/05_REFERENCIAS_PROFISSIONAIS.md`](docs/05_REFERENCIAS_PROFISSIONAIS.md) — fontes oficiais e critérios usados no conteúdo profissional.
-- [`docs/06_DADOS_A_CONFIRMAR_COM_CONTABILISTA.md`](docs/06_DADOS_A_CONFIRMAR_COM_CONTABILISTA.md) — ficha de levantamento para fechar dados e conteúdo antes da publicação.
+- [`PROJECT_STATUS.md`](PROJECT_STATUS.md) — estado, concluído e pendente.
+- [`ROADMAP.md`](ROADMAP.md) — evolução técnica e profissional.
+- [`docs/01_ARQUITETURA_E_METODOS.md`](docs/01_ARQUITETURA_E_METODOS.md) — arquitetura e métodos do website.
+- [`docs/02_GUIA_ESTUDO.md`](docs/02_GUIA_ESTUDO.md) — estudo do frontend.
+- [`docs/03_CURRICULO_E_PORTFOLIO.md`](docs/03_CURRICULO_E_PORTFOLIO.md) — apresentação profissional do projeto.
+- [`docs/04_PUBLICACAO_E_CONFORMIDADE.md`](docs/04_PUBLICACAO_E_CONFORMIDADE.md) — preparação para utilização real.
+- [`docs/05_REFERENCIAS_PROFISSIONAIS.md`](docs/05_REFERENCIAS_PROFISSIONAIS.md) — referências profissionais.
+- [`docs/06_DADOS_A_CONFIRMAR_COM_CONTABILISTA.md`](docs/06_DADOS_A_CONFIRMAR_COM_CONTABILISTA.md) — levantamento antes da publicação.
+- [`docs/07_COLABORACAO_E_EVOLUCAO.md`](docs/07_COLABORACAO_E_EVOLUCAO.md) — colaboração negócio/tecnologia.
+- [`docs/08_BASE_DADOS_E_SEGURANCA.md`](docs/08_BASE_DADOS_E_SEGURANCA.md) — manual PostgreSQL e segurança.
+- [`database/README.md`](database/README.md) — arquitetura e scripts da base de dados.
 
-## Objetivos
+## Arquitetura
 
-- Apresentar a atividade de forma profissional e credível.
-- Explicar serviços de forma objetiva e clara.
-- Facilitar o primeiro contacto de potenciais clientes.
-- Ter boa experiência em computador, tablet e smartphone.
-- Manter uma solução tecnicamente simples e sustentável.
-- Aplicar princípios de acessibilidade e minimização de dados.
-- Respeitar a necessidade de validação deontológica/profissional do conteúdo.
-- Servir também como projeto documentado de portefólio técnico.
+### Website público atual
 
-## Funcionalidades
+```text
+Browser
+  ├── index.html
+  ├── assets/styles.css
+  └── assets/app.js
+```
 
-- navegação responsiva;
-- apresentação institucional;
-- secção de serviços;
-- explicação do processo de acompanhamento;
-- segmentação de público;
-- FAQ;
-- formulário que prepara uma mensagem para WhatsApp;
-- contacto direto por WhatsApp e e-mail;
-- SEO técnico básico;
-- Open Graph;
-- dados estruturados Schema.org;
-- `robots.txt`;
-- acessibilidade básica;
-- ano do rodapé atualizado por JavaScript;
-- documentação técnica e operacional.
+O formulário público continua sem guardar dados numa base própria: prepara a mensagem localmente e abre o WhatsApp.
+
+### Aplicação futura
+
+```text
+Frontend
+   |
+ HTTPS
+   |
+API / Backend
+   |
+PostgreSQL
+   ├── ct_app
+   └── ct_audit
+```
+
+**O frontend nunca liga diretamente ao PostgreSQL.**
+
+## Website
+
+Funcionalidades principais:
+
+- layout institucional responsivo;
+- navegação mobile;
+- apresentação objetiva de serviços;
+- processo de acompanhamento;
+- público-alvo e FAQ;
+- contacto por WhatsApp/e-mail;
+- formulário local;
+- SEO/Open Graph/Schema.org básicos;
+- acessibilidade;
+- `robots.txt`.
+
+## Base de dados — fundação
+
+A pasta `database/` contém uma primeira arquitetura PostgreSQL orientada a segurança e aprendizagem.
+
+Inclui:
+
+- schemas próprios `ct_app` e `ct_audit`;
+- organizações e utilizadores;
+- memberships/perfis;
+- leads;
+- clientes e contactos;
+- tarefas;
+- metadados documentais;
+- constraints e índices;
+- triggers;
+- Row-Level Security;
+- isolamento por organização;
+- políticas por perfil;
+- auditoria;
+- role runtime com least privilege;
+- dados fictícios para laboratório.
+
+Perfis previstos:
+
+```text
+owner
+accountant
+assistant
+technical
+read_only
+```
+
+O perfil `technical` está deliberadamente separado do acesso normal aos dados funcionais de clientes.
+
+## Segurança por desenho
+
+Princípios aplicados:
+
+- frontend sem segredos;
+- PostgreSQL atrás de API;
+- least privilege;
+- RBAC;
+- RLS;
+- defesa em profundidade;
+- separação de funções;
+- auditoria;
+- minimização de dados em logs;
+- dados sintéticos no portefólio;
+- `.gitignore` para `.env`, chaves, dumps, backups e artefactos locais;
+- nenhuma password versionada.
+
+A base de dados ainda não foi executada contra dados reais. Nesta fase é uma fundação versionada para laboratório e testes.
 
 ## Estrutura
 
@@ -60,125 +131,85 @@ Consulte também:
 .
 ├── index.html
 ├── robots.txt
+├── .gitignore
 ├── README.md
 ├── PROJECT_STATUS.md
 ├── ROADMAP.md
 ├── assets/
 │   ├── app.js
 │   └── styles.css
+├── database/
+│   ├── README.md
+│   ├── 01_schema.sql
+│   ├── 02_security_rls.sql
+│   ├── 03_audit.sql
+│   ├── 04_seed_demo.sql
+│   └── 05_runtime_permissions.sql
 └── docs/
     ├── 01_ARQUITETURA_E_METODOS.md
     ├── 02_GUIA_ESTUDO.md
     ├── 03_CURRICULO_E_PORTFOLIO.md
     ├── 04_PUBLICACAO_E_CONFORMIDADE.md
     ├── 05_REFERENCIAS_PROFISSIONAIS.md
-    └── 06_DADOS_A_CONFIRMAR_COM_CONTABILISTA.md
+    ├── 06_DADOS_A_CONFIRMAR_COM_CONTABILISTA.md
+    ├── 07_COLABORACAO_E_EVOLUCAO.md
+    └── 08_BASE_DADOS_E_SEGURANCA.md
 ```
 
-## Stack
+## Stack atual / prevista
+
+### Implementado
 
 - HTML5
 - CSS3
 - JavaScript vanilla
-- Git
-- GitHub
+- PostgreSQL SQL/PLpgSQL (scripts versionados)
+- Git / GitHub
 
-Não existe backend nem base de dados nesta fase.
+### Próxima fase
 
-## Fluxo de contacto
+- API backend;
+- autenticação;
+- queries parametrizadas;
+- RBAC no backend;
+- contexto RLS por request;
+- testes automatizados;
+- gestão de segredos;
+- logging e rate limiting.
 
-```text
-Visitante
-   ↓
-Preenche os dados no browser
-   ↓
-JavaScript valida e constrói a mensagem
-   ↓
-A mensagem é codificada para URL
-   ↓
-Abre o WhatsApp
-```
+## Dados reais
 
-O website não possui infraestrutura própria para guardar os dados introduzidos no formulário.
+Até a camada backend e os controlos operacionais estarem implementados e testados, utilizar apenas dados sintéticos na base de laboratório.
 
-## Decisão arquitetural
+Não colocar no repositório:
 
-Foi utilizada uma arquitetura estática porque satisfaz os requisitos atuais com menor complexidade, menor superfície de manutenção e sem dependências desnecessárias.
+- dados reais de clientes;
+- NIF/IBAN/documentos contabilísticos;
+- passwords;
+- tokens;
+- chaves privadas;
+- `.env` real;
+- dumps/backups de produção.
 
-Frameworks, backend, autenticação e base de dados só deverão ser considerados quando surgirem requisitos que os justifiquem.
+## Portefólio
 
-## Comunicação profissional
-
-Como o website se destina a utilização real na área da contabilidade, o conteúdo foi revisto para privilegiar linguagem objetiva e descritiva, evitando promessas de resultados ou formulações excessivamente promocionais.
-
-A validação final das qualificações, serviços, dados profissionais e âmbito de atuação pertence à contabilista responsável.
-
-## Acessibilidade
-
-O projeto inclui, entre outras medidas:
-
-- HTML semântico;
-- skip link;
-- labels associados aos campos;
-- atributos ARIA no menu e feedback do formulário;
-- navegação adaptada a mobile;
-- suporte a redução de movimento.
-
-## SEO
-
-Foram implementados:
-
-- `title` descritivo;
-- `meta description`;
-- idioma `pt-PT`;
-- Open Graph básico;
-- hierarquia de títulos;
-- Schema.org `ProfessionalService`;
-- `robots.txt`.
-
-O SEO final deverá ser revisto depois de definido o domínio e a área geográfica de atuação. O `sitemap.xml` deve ser criado apenas quando existir URL final estável.
-
-## Privacidade
-
-Foi adotado o princípio de minimização de dados.
-
-O site não possui, nesta fase:
-
-- cookies próprios;
-- analytics;
-- login;
-- base de dados de clientes;
-- armazenamento próprio do conteúdo do formulário.
-
-Antes de adicionar ferramentas de analytics, CRM, formulários armazenados ou área de cliente, os requisitos de segurança e privacidade devem ser reavaliados.
-
-## Contactos atualmente configurados
-
-- WhatsApp: `+351 928 207 611`
-- E-mail: `ctcontabilidadeegestao@gmail.com`
-
-Estes dados devem ser novamente confirmados antes da publicação definitiva.
-
-## Utilização como portefólio
-
-Este projeto demonstra trabalho em:
+O projeto passa a demonstrar competências em:
 
 - análise de requisitos;
-- HTML semântico;
-- CSS responsivo;
-- JavaScript e DOM;
-- formulários e validação;
-- integração WhatsApp;
-- SEO;
-- acessibilidade;
-- privacidade por desenho;
-- Git/GitHub;
-- branches e Pull Requests;
+- frontend e UX;
+- PostgreSQL e modelação relacional;
+- SQL/PLpgSQL;
+- constraints, índices e triggers;
+- RBAC e Row-Level Security;
+- auditoria;
+- least privilege;
+- security/privacy by design;
+- Git/GitHub e Pull Requests;
 - documentação técnica;
-- manutenção de um projeto para utilização real.
+- evolução de um projeto para utilização real.
 
 ## Autor / manutenção técnica
 
 Projeto desenvolvido e mantido no GitHub por [Nekas1980](https://github.com/Nekas1980).
 
-A validação do conteúdo contabilístico, fiscal, profissional e deontológico deve ser feita pela profissional responsável antes da publicação definitiva.
+A validação do conteúdo contabilístico, fiscal, profissional e deontológico pertence à profissional responsável. A vertente tecnológica deve manter separação clara de responsabilidades e acessos.
