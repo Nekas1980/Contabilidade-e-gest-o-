@@ -1,108 +1,153 @@
 # ROADMAP — CT Contabilidade e Gestão
 
-## Fase 1 — Base profissional
+## Fase 1 — Base profissional do website
 
 Estado: **concluída na branch `redesign-profissional`**
 
 - redesign institucional;
 - responsive design;
-- serviços;
-- proposta de valor;
-- processo de trabalho;
+- serviços e acompanhamento;
 - FAQ;
-- contacto por WhatsApp e e-mail;
+- contacto por WhatsApp/e-mail;
 - formulário local;
-- SEO básico;
-- acessibilidade básica;
+- SEO e acessibilidade básicos;
 - documentação técnica.
 
 ## Fase 2 — Validação com a contabilista
 
 Estado: **pendente**
 
-Objetivo: garantir que o conteúdo representa corretamente a profissional e os serviços prestados.
-
-Tarefas:
-
-- validar marca e nome profissional;
-- validar serviços;
-- validar contactos;
-- validar FAQ;
-- confirmar dados legais/profissionais;
-- confirmar área geográfica e atendimento;
-- decidir se existem serviços presenciais, remotos ou ambos;
-- recolher eventual logótipo/fotografia profissional autorizada.
+- validar marca, nome e serviços;
+- validar contactos e FAQ;
+- confirmar dados profissionais;
+- confirmar área geográfica/forma de atendimento;
+- recolher eventual identidade visual autorizada;
+- identificar fluxos reais que possam beneficiar de digitalização.
 
 ## Fase 3 — Publicação profissional
 
 Estado: **planeada**
 
-- escolher domínio próprio;
-- configurar DNS;
-- ativar HTTPS;
-- configurar GitHub Pages ou outro alojamento;
-- criar favicon definitivo;
-- criar imagem Open Graph;
-- finalizar `robots.txt`;
-- criar `sitemap.xml` com domínio definitivo;
-- configurar e-mail profissional, se desejado;
-- validar política de privacidade.
+- domínio próprio;
+- DNS/HTTPS;
+- alojamento;
+- favicon e Open Graph final;
+- sitemap;
+- eventual e-mail profissional;
+- informação de privacidade final.
 
-## Fase 4 — Conversão e confiança
+## Fase 4 — PostgreSQL seguro
 
-Estado: **opcional, após publicação**
+Estado: **fundação criada; testes pendentes**
 
-- marcação de reunião;
-- guardar contacto/vCard;
-- testemunhos reais autorizados;
-- Google Business Profile;
-- localização/mapa, se houver atendimento presencial;
-- páginas individuais por serviço;
-- secção de perguntas frequentes expandida;
-- conteúdo informativo revisto pela contabilista.
+Implementado no repositório:
 
-## Fase 5 — Operação digital
+- schemas `ct_app` e `ct_audit`;
+- organizações/utilizadores/memberships;
+- perfis funcionais;
+- leads, clientes, contactos, tarefas e metadados documentais;
+- constraints e índices;
+- Row-Level Security;
+- isolamento por organização;
+- políticas por perfil;
+- auditoria;
+- role runtime com least privilege;
+- seed exclusivamente fictício;
+- documentação de segurança.
 
-Estado: **avaliar apenas se existir necessidade**
+A executar/testar:
 
-Possíveis funcionalidades:
+- laboratório PostgreSQL dedicado;
+- testes com duas organizações;
+- testes de cada perfil;
+- tentativas de acesso cruzado;
+- testes de auditoria;
+- testes de privilégios SQL;
+- migrations reproduzíveis.
 
-- backend para pedidos;
-- CRM;
-- área reservada de cliente;
+## Fase 5 — API segura
+
+Estado: **próxima fase técnica**
+
+Arquitetura:
+
+```text
+Frontend -> HTTPS -> API -> PostgreSQL
+```
+
+Requisitos:
+
+- Node.js/TypeScript ou stack backend definida;
+- pool PostgreSQL;
+- queries parametrizadas;
 - autenticação;
-- gestão documental;
+- RBAC;
+- validação server-side;
+- transações;
+- contexto RLS por request;
+- secret management;
+- logging/correlation IDs;
+- rate limiting;
+- CORS restritivo;
+- headers de segurança;
+- tratamento seguro de erros;
+- testes automatizados.
+
+## Fase 6 — CRM / operação interna
+
+Só avançar depois de existir API segura e requisitos reais validados.
+
+Possibilidades:
+
+- gestão de leads;
+- clientes;
+- tarefas;
+- agenda;
+- área interna;
+- gestão documental privada;
 - notificações;
-- integração com agenda;
-- dashboard interno.
+- dashboards operacionais.
 
-Estas funcionalidades alteram significativamente requisitos de segurança, privacidade e manutenção.
+Dados fiscais/financeiros detalhados não devem ser adicionados apenas para tornar o projeto maior. Exigem requisitos, modelo de ameaça e validação profissional.
 
-## Fase 6 — Métricas
+## Fase 7 — Segurança aplicada
 
-Só implementar analytics depois de definir:
+Objetivo de portefólio em cibersegurança:
 
-- objetivo das métricas;
-- solução técnica;
-- requisitos de consentimento;
-- política de privacidade;
-- retenção de dados.
+- threat model formal;
+- matriz RBAC;
+- testes Broken Access Control;
+- SQL Injection tests;
+- secret scanning;
+- dependency scanning;
+- headers/CSP;
+- logs de segurança;
+- backup + teste de restore;
+- hardening PostgreSQL;
+- CI com testes;
+- documentação de incident response básica.
 
-Métricas úteis podem incluir:
+Usar OWASP ASVS/cheat sheets como referência de engenharia, não como alegação de certificação.
 
-- visitas;
+## Fase 8 — Métricas e evolução comercial
+
+Depois da publicação e apenas com requisitos de privacidade definidos:
+
+- métricas de utilização;
+- conversões de contacto;
 - origem do tráfego;
-- cliques em WhatsApp;
-- cliques em e-mail;
-- submissões iniciadas;
-- páginas mais visitadas.
+- melhoria contínua do conteúdo;
+- automatizações úteis ao negócio.
 
 ## Princípio de evolução
 
-Cada nova funcionalidade deve responder a três perguntas:
+Cada funcionalidade deve responder:
 
-1. Qual é o problema de negócio que resolve?
-2. Qual é o custo de manutenção e segurança?
-3. O benefício justifica a complexidade?
+1. Que problema real resolve?
+2. Que dados necessita?
+3. Quem deve poder aceder?
+4. Qual o risco de segurança/privacidade?
+5. Qual o custo de manutenção?
+6. Como será testada e auditada?
 
-Se não houver resposta clara, a funcionalidade não deve ser adicionada apenas para tornar o projeto maior.
+O objetivo é construir um produto profissional e um portefólio credível, não acumular funcionalidades sem controlo.
