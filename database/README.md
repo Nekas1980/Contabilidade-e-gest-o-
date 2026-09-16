@@ -4,7 +4,7 @@
 
 Esta pasta inicia a evolução do projeto para uma aplicação com backend e PostgreSQL, mantendo a segurança e a aprendizagem como requisitos de primeira classe.
 
-A base de dados NÃO deve ser ligada diretamente ao website público.
+A base de dados **NÃO** deve ser ligada diretamente ao website público.
 
 ## Arquitetura prevista
 
@@ -15,7 +15,7 @@ Browser / Frontend
         |
    Backend / API
    - autenticação
-   - autorização
+   - autorização / RBAC
    - validação
    - rate limiting
    - contexto de utilizador/organização
@@ -25,7 +25,7 @@ Browser / Frontend
      PostgreSQL
    - schema ct_app
    - schema ct_audit
-   - RLS
+   - RLS + perfis
    - constraints
    - auditoria
 ```
@@ -46,9 +46,10 @@ O frontend comunica com uma API. Só a API comunica com PostgreSQL.
 ## Ficheiros
 
 1. `01_schema.sql` — schemas, tabelas, constraints, índices e triggers `updated_at`.
-2. `02_security_rls.sql` — isolamento por organização através de Row-Level Security.
+2. `02_security_rls.sql` — isolamento por organização e perfil através de Row-Level Security.
 3. `03_audit.sql` — auditoria de alterações sem duplicar automaticamente os dados dos registos.
 4. `04_seed_demo.sql` — dados exclusivamente fictícios para desenvolvimento e estudo.
+5. `05_runtime_permissions.sql` — role de serviço com privilégios mínimos para a futura API.
 
 ## Modelo inicial
 
@@ -69,7 +70,7 @@ Perfis iniciais:
 - `technical`
 - `read_only`
 
-A existência do perfil na BD não substitui autorização na API. São controlos complementares.
+O perfil `technical` fica deliberadamente sem acesso normal aos dados funcionais de clientes. Pode ter acesso a eventos técnicos de auditoria quando necessário. Isto aplica separação de funções e least privilege.
 
 ### `ct_app.leads`
 Pedidos/contactos comerciais estruturados.
@@ -91,14 +92,17 @@ Registo técnico de eventos e alterações.
 
 ## Segurança implementada no desenho
 
-- schemas próprios, sem usar `public` para os dados da aplicação;
+- schemas próprios, sem usar `public` para dados da aplicação;
 - UUIDs como identificadores funcionais;
 - `NOT NULL`, `CHECK`, `UNIQUE` e foreign keys;
 - índices orientados às consultas previstas;
 - Row-Level Security;
 - `FORCE ROW LEVEL SECURITY`;
-- contexto por organização e utilizador;
+- isolamento por organização;
+- controlo adicional por perfil funcional;
+- perfil técnico separado dos dados de clientes;
 - revogação de acesso público aos schemas/tabelas/funções;
+- role `ct_app_runtime` sem superuser, `CREATEDB`, `CREATEROLE` ou `BYPASSRLS`;
 - auditoria de INSERT/UPDATE/DELETE;
 - logs sem cópia integral do conteúdo dos registos;
 - dados de demonstração falsos;
@@ -116,6 +120,23 @@ SET LOCAL app.request_id = '<ID de correlação>';
 
 Estes valores nunca devem ser aceites diretamente de um formulário sem validação/autorização no backend.
 
+## Role da aplicação
+
+`05_runtime_permissions.sql` cria um role **NOLOGIN** chamado `ct_app_runtime`.
+
+Este role representa um conjunto de privilégios, não uma credencial.
+
+A identidade LOGIN real do backend deve ser criada/provisionada fora do repositório e associada ao role. A respetiva password, certificado ou token nunca deve ser committed.
+
+O runtime não recebe privilégios para:
+
+- criar organizações;
+- alterar memberships/roles;
+- inserir diretamente no log de auditoria;
+- ignorar RLS.
+
+Essas operações exigem fluxos administrativos/provisioning separados.
+
 ## Ordem de execução para laboratório
 
 Numa base de dados vazia de desenvolvimento:
@@ -124,8 +145,11 @@ Numa base de dados vazia de desenvolvimento:
 01_schema.sql
 02_security_rls.sql
 03_audit.sql
-04_seed_demo.sql
+05_runtime_permissions.sql
+04_seed_demo.sql   # executar com a conta de migração/owner, não com ct_app_runtime
 ```
+
+O `seed` necessita de privilégios de bootstrap que o runtime normal não possui.
 
 Antes de executar, fazer revisão do SQL. Em produção devem ser usadas migrations controladas e backups testados.
 
@@ -143,6 +167,7 @@ Não colocar no GitHub:
 - passwords;
 - tokens;
 - chaves privadas;
+- ficheiros `.env` reais;
 - dumps de produção.
 
 ## Próxima etapa técnica
