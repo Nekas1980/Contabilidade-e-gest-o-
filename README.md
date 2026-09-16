@@ -2,7 +2,7 @@
 
 Website institucional desenvolvido para utilização real por uma profissional da área de contabilidade e gestão.
 
-O projeto começou como um cartão de visita digital simples e está a ser evoluído para uma presença online profissional, responsiva, credível e orientada à geração de contactos.
+O projeto começou como um cartão de visita digital simples e está a ser evoluído para uma presença online profissional, responsiva, credível e orientada ao contacto, com comunicação adequada ao contexto profissional da contabilidade.
 
 ## Estado atual
 
@@ -22,24 +22,25 @@ Consulte também:
 - [`docs/02_GUIA_ESTUDO.md`](docs/02_GUIA_ESTUDO.md) — manual de estudo baseado no código real.
 - [`docs/03_CURRICULO_E_PORTFOLIO.md`](docs/03_CURRICULO_E_PORTFOLIO.md) — apresentação do projeto em CV, GitHub, LinkedIn e entrevistas.
 - [`docs/04_PUBLICACAO_E_CONFORMIDADE.md`](docs/04_PUBLICACAO_E_CONFORMIDADE.md) — preparação para utilização profissional.
+- [`docs/05_REFERENCIAS_PROFISSIONAIS.md`](docs/05_REFERENCIAS_PROFISSIONAIS.md) — fontes oficiais e critérios usados no conteúdo profissional.
 
 ## Objetivos
 
 - Apresentar a atividade de forma profissional e credível.
-- Explicar serviços de forma simples.
+- Explicar serviços de forma objetiva e clara.
 - Facilitar o primeiro contacto de potenciais clientes.
 - Ter boa experiência em computador, tablet e smartphone.
 - Manter uma solução tecnicamente simples e sustentável.
 - Aplicar princípios de acessibilidade e minimização de dados.
+- Respeitar a necessidade de validação deontológica/profissional do conteúdo.
 - Servir também como projeto documentado de portefólio técnico.
 
 ## Funcionalidades
 
 - navegação responsiva;
-- hero institucional com chamadas à ação;
+- apresentação institucional;
 - secção de serviços;
-- proposta de valor orientada à gestão;
-- processo de acompanhamento;
+- explicação do processo de acompanhamento;
 - segmentação de público;
 - FAQ;
 - formulário que prepara uma mensagem para WhatsApp;
@@ -47,6 +48,7 @@ Consulte também:
 - SEO técnico básico;
 - Open Graph;
 - dados estruturados Schema.org;
+- `robots.txt`;
 - acessibilidade básica;
 - ano do rodapé atualizado por JavaScript;
 - documentação técnica e operacional.
@@ -56,6 +58,7 @@ Consulte também:
 ```text
 .
 ├── index.html
+├── robots.txt
 ├── README.md
 ├── PROJECT_STATUS.md
 ├── ROADMAP.md
@@ -66,7 +69,8 @@ Consulte também:
     ├── 01_ARQUITETURA_E_METODOS.md
     ├── 02_GUIA_ESTUDO.md
     ├── 03_CURRICULO_E_PORTFOLIO.md
-    └── 04_PUBLICACAO_E_CONFORMIDADE.md
+    ├── 04_PUBLICACAO_E_CONFORMIDADE.md
+    └── 05_REFERENCIAS_PROFISSIONAIS.md
 ```
 
 ## Stack
@@ -101,6 +105,12 @@ Foi utilizada uma arquitetura estática porque satisfaz os requisitos atuais com
 
 Frameworks, backend, autenticação e base de dados só deverão ser considerados quando surgirem requisitos que os justifiquem.
 
+## Comunicação profissional
+
+Como o website se destina a utilização real na área da contabilidade, o conteúdo foi revisto para privilegiar linguagem objetiva e descritiva, evitando promessas de resultados ou formulações excessivamente promocionais.
+
+A validação final das qualificações, serviços, dados profissionais e âmbito de atuação pertence à contabilista responsável.
+
 ## Acessibilidade
 
 O projeto inclui, entre outras medidas:
@@ -121,9 +131,10 @@ Foram implementados:
 - idioma `pt-PT`;
 - Open Graph básico;
 - hierarquia de títulos;
-- Schema.org `ProfessionalService`.
+- Schema.org `ProfessionalService`;
+- `robots.txt`.
 
-O SEO final deverá ser revisto depois de definido o domínio e a área geográfica de atuação.
+O SEO final deverá ser revisto depois de definido o domínio e a área geográfica de atuação. O `sitemap.xml` deve ser criado apenas quando existir URL final estável.
 
 ## Privacidade
 
@@ -168,4 +179,4 @@ Este projeto demonstra trabalho em:
 
 Projeto desenvolvido e mantido no GitHub por [Nekas1980](https://github.com/Nekas1980).
 
-A validação do conteúdo contabilístico, fiscal e profissional deve ser feita pela profissional responsável antes da publicação definitiva.
+A validação do conteúdo contabilístico, fiscal, profissional e deontológico deve ser feita pela profissional responsável antes da publicação definitiva.
