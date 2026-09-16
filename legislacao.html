@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="CT Contabilidade e Gestão — pesquisa de legislação, obrigações declarativas e pagamentos empresariais em Portugal.">
+  <meta name="theme-color" content="#07111f">
+  <meta name="robots" content="index, follow">
+  <title>Legislação e Obrigações | CT Contabilidade e Gestão</title>
+  <link rel="stylesheet" href="assets/styles.css">
+  <link rel="stylesheet" href="assets/legislacao.css">
+</head>
+<body>
+  <a class="skip-link" href="#conteudo">Saltar para o conteúdo</a>
+
+  <header class="site-header">
+    <div class="container nav">
+      <a class="brand" href="index.html#inicio" aria-label="CT Contabilidade e Gestão — início">
+        <span class="brand-mark">CT</span>
+        <span class="brand-copy">Contabilidade e Gestão<small>Informação · Organização · Acompanhamento</small></span>
+      </a>
+      <button class="menu-toggle" type="button" aria-label="Abrir menu" aria-expanded="false" data-menu-toggle>☰</button>
+      <nav class="nav-links" aria-label="Navegação principal" data-nav-links>
+        <a href="index.html#servicos">Serviços</a>
+        <a href="index.html#metodo">Como trabalhamos</a>
+        <a href="legislacao.html" aria-current="page">Legislação</a>
+        <a href="index.html#faq">FAQ</a>
+        <a class="nav-cta" href="index.html#contacto">Contactar</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="conteudo">
+    <section class="legal-hero">
+      <div class="container legal-hero-grid">
+        <div>
+          <p class="eyebrow">Portugal · informação empresarial</p>
+          <h1>Legislação, obrigações e pagamentos.</h1>
+          <p>Pesquisa orientadora sobre categorias de entidades, IRC, IVA, faturação, declarações e Segurança Social, com ligações para fontes oficiais.</p>
+        </div>
+        <aside class="legal-warning">
+          <strong>Informação geral</strong>
+          <p>Os prazos e obrigações dependem do enquadramento concreto, atividade, regime fiscal e período de tributação. Esta página não substitui análise profissional nem a consulta das fontes oficiais.</p>
+          <small>Conteúdo revisto em 16 de setembro de 2026.</small>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section section-soft">
+      <div class="container">
+        <header class="section-head">
+          <span class="section-kicker">Pesquisar</span>
+          <h2>Encontre a obrigação ou tema.</h2>
+          <p>Pesquise por palavras como “IVA”, “Modelo 22”, “faturas”, “Segurança Social” ou filtre pela dimensão da entidade.</p>
+        </header>
+
+        <form class="legal-search" id="legal-search-form" role="search">
+          <div class="field legal-query-field">
+            <label for="legal-query">Pesquisar legislação ou obrigação</label>
+            <input id="legal-query" type="search" placeholder="Ex.: IVA, IES, microempresa, pagamentos…" autocomplete="off">
+          </div>
+          <div class="field">
+            <label for="legal-size">Dimensão</label>
+            <select id="legal-size">
+              <option value="all">Todas</option>
+              <option value="micro">Micro</option>
+              <option value="pequena">Pequena</option>
+              <option value="media">Média</option>
+              <option value="grande">Grande</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="legal-type">Tema</label>
+            <select id="legal-type">
+              <option value="all">Todos</option>
+              <option value="classificacao">Classificação</option>
+              <option value="irc">IRC</option>
+              <option value="iva">IVA</option>
+              <option value="faturacao">Faturação</option>
+              <option value="trabalho">Trabalho e remunerações</option>
+              <option value="seguranca-social">Segurança Social</option>
+            </select>
+          </div>
+          <button class="btn btn-dark legal-search-button" type="submit">Pesquisar</button>
+        </form>
+
+        <div class="legal-summary" id="legal-summary" aria-live="polite"></div>
+        <div class="legal-results" id="legal-results"></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <header class="section-head">
+          <span class="section-kicker">Categorias 2026</span>
+          <h2>Dimensão contabilística das entidades.</h2>
+          <p>Para exercícios iniciados em, ou após, 1 de janeiro de 2026, o SNC utiliza os limites abaixo. A classificação depende de não ultrapassar dois dos três critérios aplicáveis.</p>
+        </header>
+
+        <div class="legal-size-grid">
+          <article class="legal-size-card">
+            <span>Microentidade</span><strong>450 mil €</strong><p>Total do balanço</p><strong>900 mil €</strong><p>Volume de negócios líquido</p><strong>10</strong><p>Trabalhadores médios</p>
+          </article>
+          <article class="legal-size-card">
+            <span>Pequena entidade</span><strong>5 M€</strong><p>Total do balanço</p><strong>10 M€</strong><p>Volume de negócios líquido</p><strong>50</strong><p>Trabalhadores médios</p>
+          </article>
+          <article class="legal-size-card">
+            <span>Média entidade</span><strong>25 M€</strong><p>Total do balanço</p><strong>50 M€</strong><p>Volume de negócios líquido</p><strong>250</strong><p>Trabalhadores médios</p>
+          </article>
+          <article class="legal-size-card">
+            <span>Grande entidade</span><strong>Acima</strong><p>Ultrapassa dois dos três limites previstos para médias entidades. Entidades de interesse público são consideradas grandes para este efeito.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-dark">
+      <div class="container">
+        <header class="section-head">
+          <span class="section-kicker">Calendário-base</span>
+          <h2>Prazos que merecem acompanhamento.</h2>
+          <p>Resumo de referência; confirme sempre o calendário oficial do período concreto.</p>
+        </header>
+        <div class="legal-deadlines">
+          <article><strong>Dia 5</strong><span>Comunicação à AT dos elementos das faturas emitidas no mês anterior, salvo ajustamentos do calendário quando aplicável.</span></article>
+          <article><strong>Dia 10</strong><span>Declaração de remunerações à Segurança Social relativa ao mês anterior, em regra.</span></article>
+          <article><strong>Dia 20</strong><span>Prazo-base de entrega da declaração periódica de IVA no regime normal, segundo a periodicidade aplicável.</span></article>
+          <article><strong>Dia 25</strong><span>Pagamento do IVA apurado e, desde 2026, prazo limite geral de pagamento das contribuições das entidades empregadoras à Segurança Social.</span></article>
+          <article><strong>31 maio</strong><span>Modelo 22 de IRC para entidades com período de tributação coincidente com o ano civil.</span></article>
+          <article><strong>15 julho</strong><span>IES / declaração anual de informação contabilística e fiscal, para período coincidente com o ano civil.</span></article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div><div class="footer-brand">CT Contabilidade e Gestão</div><div>Contabilidade · Fiscalidade · Apoio à Gestão</div></div>
+      <div class="footer-meta">
+        <div>© <span data-current-year>2026</span> CT Contabilidade e Gestão</div>
+        <div><a href="index.html#contacto">Pedido de contacto</a></div>
+        <div>Informação orientadora; confirme o enquadramento concreto e as fontes oficiais.</div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/app.js" defer></script>
+  <script src="assets/legislacao.js" defer></script>
+</body>
+</html>
