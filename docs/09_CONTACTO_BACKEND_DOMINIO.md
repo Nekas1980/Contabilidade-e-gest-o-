@@ -2,22 +2,30 @@
 
 ## Objetivo
 
-Evoluir o formulário de contacto para que o visitante possa enviar um pedido sem abrir automaticamente WhatsApp, cliente de e-mail ou outra aplicação externa.
+Permitir que o visitante envie um pedido de contacto sem abrir WhatsApp, cliente de e-mail ou qualquer outra aplicação externa e sem expor no HTML público o endereço de e-mail ou o número de telefone da destinatária.
 
 ## Estado atual
 
-Na branch `contacto-discreto-backend-ready`, o formulário:
+Na branch `contacto-discreto-backend-ready` já existem:
 
-- recolhe apenas os dados necessários para o primeiro contacto;
-- prepara a mensagem dentro da própria página;
-- não abre automaticamente WhatsApp ou e-mail;
-- permite rever a mensagem;
-- permite copiar a mensagem;
-- não envia nem armazena dados nesta fase.
+- frontend sem `mailto:` e sem `wa.me` no HTML público;
+- remoção de e-mail e telefone do Schema.org público;
+- formulário com nome, e-mail, empresa, telefone opcional, área, preferência de resposta e mensagem;
+- fallback local que prepara a mensagem enquanto o backend não está publicado;
+- endpoint serverless `POST /api/contact` em `api/contact.js`;
+- validação server-side e limites de tamanho;
+- allowlist CORS por `ALLOWED_ORIGINS`;
+- honeypot anti-spam;
+- logging mínimo por `requestId`, sem copiar dados pessoais para os logs da aplicação;
+- envio por fornecedor de e-mail transacional através de segredo de backend;
+- notificação WhatsApp Business opcional, sem dados pessoais no conteúdo da notificação;
+- `.env.example` sem valores reais;
+- testes automáticos da API;
+- validação automática de links internos e deteção de contactos diretos expostos no HTML.
 
-Este comportamento é intencional até existir um backend seguro.
+Os testes de GitHub Actions passaram em 16 de setembro de 2026.
 
-## Arquitetura pretendida
+## Arquitetura
 
 ```text
 Browser
@@ -25,194 +33,115 @@ Browser
  HTTPS POST /api/contact
    |
 Backend / Serverless Function
-   |-- validação e sanitização
-   |-- rate limiting
-   |-- anti-spam
+   |-- validação
+   |-- CORS allowlist
+   |-- honeypot
    |-- logging mínimo
-   |-- gestão de segredos
+   |-- secret management
    |
-   |---> Serviço de e-mail
+   |---> serviço de e-mail transacional
    |
-   '---> WhatsApp Business API, quando configurada e autorizada
+   '---> WhatsApp Business API (opcional)
 ```
 
-## Porque não enviar diretamente do JavaScript
+O formulário não precisa de guardar os pedidos em PostgreSQL nesta primeira versão. O princípio adotado é: validar, entregar e reter apenas o que tiver uma finalidade operacional definida.
 
-Credenciais de e-mail, tokens da WhatsApp Business API e outras chaves privadas não podem ficar no JavaScript servido ao visitante. Qualquer segredo colocado no frontend deve ser considerado público.
+## Configuração privada
 
-O browser envia apenas o pedido para o backend. O backend é o único componente autorizado a falar com os fornecedores externos.
+As variáveis necessárias estão documentadas em `.env.example`.
 
-## Contrato proposto da API
+Nunca versionar valores reais de:
 
-Endpoint:
+- `RESEND_API_KEY`;
+- `CONTACT_EMAIL_TO`;
+- `CONTACT_EMAIL_FROM`;
+- tokens da WhatsApp Business API;
+- identificadores privados de número;
+- outros segredos do fornecedor.
 
-```text
-POST /api/contact
-```
+No alojamento, estes valores devem ser configurados como variáveis de ambiente/segredos.
 
-Payload lógico:
+## Frontend e GitHub Pages
 
-```json
-{
-  "name": "string",
-  "email": "string",
-  "phone": "string opcional",
-  "company": "string opcional",
-  "need": "string",
-  "replyPreference": "email | whatsapp | any",
-  "message": "string opcional"
-}
-```
+O JavaScript usa envio real apenas quando existe um endpoint configurado. Enquanto o site estiver em GitHub Pages sem URL de backend definida, mantém o modo de preparação local e não finge que enviou a mensagem.
 
-O backend deve rejeitar campos inesperados e impor limites de tamanho.
-
-## Resposta da API
-
-Sucesso:
-
-```json
-{
-  "ok": true,
-  "message": "Pedido recebido."
-}
-```
-
-Erro de validação:
-
-```json
-{
-  "ok": false,
-  "code": "VALIDATION_ERROR"
-}
-```
-
-Não devolver detalhes internos, stack traces, tokens ou mensagens do fornecedor externo.
+Depois de existir URL pública do backend, o frontend do GitHub Pages pode chamar essa API por HTTPS desde que a origem esteja autorizada no backend.
 
 ## E-mail
 
-O backend pode enviar uma notificação para o endereço profissional através de um fornecedor de e-mail transacional.
+O endpoint está preparado para entregar o pedido através de um serviço de e-mail transacional. O destinatário fica apenas na configuração privada do backend.
 
-Requisitos:
+Quando existir domínio próprio, configurar:
 
-- API key guardada como secret/env var do backend;
-- domínio remetente verificado quando existir domínio próprio;
-- SPF/DKIM/DMARC quando aplicável;
-- nunca enviar diretamente por SMTP a partir do browser;
-- evitar incluir mais dados pessoais do que os necessários.
+- domínio de envio verificado;
+- SPF;
+- DKIM;
+- DMARC;
+- endereço profissional do domínio.
 
 ## WhatsApp
 
-O envio automático para WhatsApp deve utilizar um canal oficial/autorizado para utilização empresarial.
+A integração prevista utiliza a API empresarial oficial e fica desativada enquanto não existirem as credenciais necessárias.
 
-Requisitos antes de ativar:
+A notificação concebida para esta fase é deliberadamente genérica, por exemplo:
 
-- conta/estrutura empresarial apropriada;
-- número autorizado;
-- token guardado apenas no backend;
-- regras e consentimentos aplicáveis ao tipo de mensagem;
-- testes em ambiente controlado;
-- tratamento de erros e limites de utilização.
+```text
+Novo pedido recebido através do website. Consulte o canal interno definido.
+```
 
-Não utilizar serviços informais que exijam expor credenciais ou contornar as regras da plataforma.
+Assim, o WhatsApp não se torna uma segunda cópia de dados pessoais do visitante.
 
-## Anti-spam e abuso
+## Controlos ainda recomendados antes de produção
 
-Antes de produção implementar:
-
-- rate limiting por IP/origem;
-- campo honeypot invisível;
-- limite de tamanho da mensagem;
-- validação server-side;
-- CORS restrito ao domínio oficial;
-- logs sem copiar mensagens completas sempre que não seja necessário;
-- eventualmente CAPTCHA/Turnstile se o abuso justificar.
-
-## Base de dados
-
-O formulário não precisa obrigatoriamente de guardar cada mensagem na base de dados.
-
-Estratégia recomendada para a primeira versão:
-
-1. validar o pedido;
-2. enviar notificações;
-3. guardar apenas o mínimo necessário caso exista uma necessidade concreta de CRM/auditoria;
-4. definir retenção e eliminação antes de armazenar dados reais.
+- rate limiting persistente por IP/origem;
+- CAPTCHA/Turnstile se surgir abuso real;
+- monitorização de falhas de entrega;
+- política de privacidade e informação sobre tratamento de dados;
+- definição de retenção se no futuro os pedidos forem guardados;
+- teste end-to-end no domínio final.
 
 ## Domínio próprio
 
-O GitHub Pages suporta domínios personalizados. O domínio final ainda deve ser escolhido e adquirido.
-
-Estratégia recomendada:
+Arquitetura possível mantendo separação clara:
 
 ```text
-www.DOMINIO.pt      -> website público
-api.DOMINIO.pt      -> backend, caso seja útil separar
+www.DOMINIO.pt   -> website público
+api.DOMINIO.pt   -> backend
 ```
 
-ou, se o fornecedor serverless permitir routing integrado:
+Ou, se todo o projeto for alojado no mesmo fornecedor:
 
 ```text
 www.DOMINIO.pt/api/contact
 ```
 
-## DNS e segurança do domínio
+## Testes
 
-Quando existir domínio:
+O workflow `.github/workflows/quality.yml` executa:
 
-- verificar o domínio no GitHub;
-- configurar DNS antes de divulgação pública;
-- ativar HTTPS;
-- evitar wildcard DNS desnecessário;
-- configurar `www` e domínio raiz de forma consistente;
-- atualizar canonical, Open Graph e sitemap;
-- configurar SPF/DKIM/DMARC se houver envio de e-mail pelo domínio.
+```text
+npm test
+npm run check:static
+```
 
-## Plano de implementação
+Os testes verificam atualmente:
 
-### Fase A — concluída nesta branch
+- métodos HTTP aceites;
+- validação de campos obrigatórios;
+- honeypot;
+- envio simulado para o fornecedor de e-mail;
+- bloqueio de origem não autorizada;
+- existência dos links/ficheiros internos do site;
+- existência das âncoras internas;
+- ausência de `mailto:`, `wa.me`, e-mail e número privados no HTML publicado.
 
-- retirar CTAs diretos para apps;
-- tornar contactos visuais mais discretos;
-- recolher e-mail/telefone apenas no formulário;
-- preparar e rever a mensagem sem abrir aplicações.
+## Próximos passos
 
-### Fase B — backend
-
-- criar função `/api/contact`;
-- validação server-side;
-- rate limiting;
-- anti-spam;
-- secret management;
-- integração de e-mail;
-- testes.
-
-### Fase C — WhatsApp empresarial
-
-- configurar fornecedor/API oficial;
-- guardar token no backend;
-- testes de envio;
-- observabilidade e tratamento de falhas.
-
-### Fase D — domínio
-
-- escolher/adquirir domínio;
-- configurar GitHub Pages ou alojamento definitivo;
-- HTTPS;
-- DNS;
-- e-mail profissional;
-- SEO final.
-
-## Valor para portefólio
-
-Esta evolução permite demonstrar:
-
-- progressive enhancement;
-- UX orientada à privacidade;
-- separação frontend/backend;
-- APIs REST;
-- serverless;
-- secret management;
-- integração com fornecedores externos;
-- validação e anti-abuso;
-- DNS e custom domains;
-- segurança aplicacional aplicada a um caso real.
+1. ligar um fornecedor de backend/serverless;
+2. configurar segredos reais no fornecedor, nunca no GitHub;
+3. configurar serviço de e-mail e domínio remetente;
+4. obter a URL da API;
+5. ligar essa URL ao frontend em GitHub Pages ou mover o site para o mesmo domínio;
+6. realizar teste end-to-end com um pedido fictício;
+7. configurar domínio próprio e HTTPS;
+8. só depois integrar CRM/base de dados se houver necessidade real.
