@@ -1,0 +1,29 @@
+name: Validar website e backend
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - contacto-discreto-backend-ready
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Obter código
+        uses: actions/checkout@v6
+
+      - name: Ver versões
+        run: |
+          node --version
+          npm --version
+
+      - name: Testar backend
+        run: npm test
+
+      - name: Verificar links internos e privacidade
+        run: npm run check:static

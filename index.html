@@ -16,9 +16,7 @@
     "@context": "https://schema.org",
     "@type": "ProfessionalService",
     "name": "CT Contabilidade e Gestão",
-    "description": "Serviços de contabilidade, fiscalidade e apoio à gestão.",
-    "email": "ctcontabilidadeegestao@gmail.com",
-    "telephone": "+351928207611"
+    "description": "Serviços de contabilidade, fiscalidade e apoio à gestão."
   }
   </script>
 </head>
@@ -53,7 +51,7 @@
 
           <div class="hero-actions">
             <a class="btn btn-primary" href="#contacto">Pedir contacto</a>
-            <a class="btn btn-secondary" href="https://wa.me/351928207611?text=Ol%C3%A1%2C%20gostaria%20de%20obter%20informa%C3%A7%C3%B5es%20sobre%20os%20vossos%20servi%C3%A7os." target="_blank" rel="noopener noreferrer">Falar no WhatsApp</a>
+            <a class="btn btn-secondary" href="#metodo">Como funciona</a>
           </div>
 
           <ul class="hero-points" aria-label="Princípios de serviço">
@@ -191,17 +189,9 @@
       <div class="container contact-grid">
         <div class="contact-copy">
           <span class="section-kicker">Contacto</span>
-          <h2>Solicite informações sobre os serviços.</h2>
-          <p>Preencha os dados essenciais e o site prepara uma mensagem para enviar por WhatsApp. Não é necessário criar conta e o website não possui base de dados própria para guardar o conteúdo deste formulário.</p>
-
-          <div class="contact-links">
-            <a class="contact-link" href="https://wa.me/351928207611" target="_blank" rel="noopener noreferrer">
-              <strong>WhatsApp</strong><span>+351 928 207 611</span>
-            </a>
-            <a class="contact-link" href="mailto:ctcontabilidadeegestao@gmail.com">
-              <strong>E-mail</strong><span>ctcontabilidadeegestao@gmail.com</span>
-            </a>
-          </div>
+          <h2>Envie um pedido de contacto.</h2>
+          <p>Preencha apenas os dados essenciais. O formulário prepara a mensagem dentro desta página e não abre automaticamente WhatsApp, e-mail ou qualquer outra aplicação.</p>
+          <p class="form-note">Canais de resposta disponíveis: WhatsApp e e-mail. Os contactos diretos deixam de ocupar espaço de destaque na página.</p>
         </div>
 
         <form class="contact-form" id="contact-form">
@@ -211,8 +201,16 @@
               <input id="nome" name="nome" type="text" autocomplete="name" required placeholder="O seu nome">
             </div>
             <div class="field">
+              <label for="email">E-mail *</label>
+              <input id="email" name="email" type="email" autocomplete="email" required placeholder="nome@exemplo.pt">
+            </div>
+            <div class="field">
               <label for="empresa">Empresa ou atividade</label>
               <input id="empresa" name="empresa" type="text" autocomplete="organization" placeholder="Nome da empresa ou atividade">
+            </div>
+            <div class="field">
+              <label for="telefone">Telefone / WhatsApp</label>
+              <input id="telefone" name="telefone" type="tel" autocomplete="tel" placeholder="Opcional">
             </div>
             <div class="field full">
               <label for="necessidade">Em que área procura informação? *</label>
@@ -226,17 +224,33 @@
               </select>
             </div>
             <div class="field full">
+              <label for="preferencia">Preferência de resposta</label>
+              <select id="preferencia" name="preferencia">
+                <option>Sem preferência</option>
+                <option>E-mail</option>
+                <option>WhatsApp</option>
+              </select>
+            </div>
+            <div class="field full">
               <label for="mensagem">Mensagem</label>
               <textarea id="mensagem" name="mensagem" placeholder="Descreva brevemente a informação ou apoio que procura."></textarea>
             </div>
           </div>
 
           <div class="form-actions">
-            <button class="btn btn-dark" type="submit">Preparar contacto no WhatsApp</button>
-            <a href="mailto:ctcontabilidadeegestao@gmail.com">Prefiro enviar e-mail</a>
+            <button class="btn btn-dark" type="submit">Preparar mensagem</button>
           </div>
-          <p class="form-note">Os dados introduzidos são utilizados no seu dispositivo para preparar a mensagem. O website não envia nem guarda esta informação numa base de dados própria.</p>
+          <p class="form-note">Nesta fase, o botão apenas prepara e mostra a mensagem na própria página. O envio silencioso será ligado a um backend seguro, sem expor credenciais no browser.</p>
           <div class="form-status" id="form-status" role="status" aria-live="polite"></div>
+
+          <div class="field full" id="prepared-message-wrapper" hidden>
+            <label for="prepared-message">Mensagem preparada</label>
+            <textarea id="prepared-message" readonly aria-describedby="prepared-message-help"></textarea>
+            <small id="prepared-message-help">Pode rever a mensagem antes de qualquer envio.</small>
+            <div class="form-actions">
+              <button class="btn btn-dark" type="button" id="copy-message">Copiar mensagem</button>
+            </div>
+          </div>
         </form>
       </div>
     </section>
@@ -251,7 +265,11 @@
         <div class="faq-list">
           <details>
             <summary>Como posso pedir informações sobre os serviços?</summary>
-            <p>Utilize o formulário desta página, o WhatsApp ou o e-mail. Indique a sua atividade e a área sobre a qual pretende obter informação.</p>
+            <p>Preencha o formulário desta página com os dados essenciais e a área sobre a qual pretende obter informação.</p>
+          </details>
+          <details>
+            <summary>O formulário abre automaticamente o WhatsApp ou o e-mail?</summary>
+            <p>Não. A mensagem é preparada dentro da própria página. O envio automático só será ativado através de uma infraestrutura de backend segura.</p>
           </details>
           <details>
             <summary>É possível pedir apoio apenas numa área específica?</summary>
@@ -259,11 +277,7 @@
           </details>
           <details>
             <summary>O site guarda os dados que escrevo no formulário?</summary>
-            <p>Não. O formulário compõe uma mensagem no navegador e abre o WhatsApp. O website não possui uma base de dados própria para guardar essa informação.</p>
-          </details>
-          <details>
-            <summary>Posso contactar por e-mail em vez de WhatsApp?</summary>
-            <p>Sim. Pode utilizar diretamente o endereço ctcontabilidadeegestao@gmail.com.</p>
+            <p>Não nesta versão. O conteúdo permanece no navegador e é utilizado apenas para preparar a mensagem apresentada no ecrã.</p>
           </details>
         </div>
       </div>
@@ -290,7 +304,7 @@
       </div>
       <div class="footer-meta">
         <div>© <span data-current-year>2026</span> CT Contabilidade e Gestão</div>
-        <div><a href="mailto:ctcontabilidadeegestao@gmail.com">ctcontabilidadeegestao@gmail.com</a></div>
+        <div>Contacto disponível através do formulário desta página.</div>
         <div>A informação apresentada é institucional e não substitui a análise da situação concreta de cada cliente.</div>
       </div>
     </div>

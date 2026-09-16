@@ -33,6 +33,7 @@ jobs:
           rm -rf _site
           mkdir -p _site
           cp index.html _site/index.html
+          cp legislacao.html _site/legislacao.html
           cp robots.txt _site/robots.txt
           cp -R assets _site/assets
           touch _site/.nojekyll

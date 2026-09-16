@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Ficha de Cliente — CT Contabilidade e Gestão</title>
+  <link rel="stylesheet" href="ficha-cliente.css">
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <span class="brand">CT</span>
+      <strong>Área Interna · Ficha de Cliente</strong>
+    </div>
+    <span class="badge">Protótipo · dados fictícios</span>
+  </header>
+
+  <main class="shell">
+    <aside class="sidebar">
+      <nav aria-label="Secções da ficha">
+        <a href="#identificacao">Identificação</a>
+        <a href="#fiscal">Folha fiscal</a>
+        <a href="#obrigacoes">Obrigações e pagamentos</a>
+        <a href="#portais">Portais oficiais</a>
+        <a href="#legislacao">Legislação associada</a>
+      </nav>
+      <div class="security-note">
+        <strong>Segurança</strong>
+        <p>Nunca guardar passwords, códigos 2FA, Chave Móvel Digital, tokens ou credenciais dos portais oficiais.</p>
+      </div>
+    </aside>
+
+    <section class="content">
+      <div class="page-head">
+        <div>
+          <p class="eyebrow">Cliente CT-0001</p>
+          <h1>Empresa Exemplo, Lda.</h1>
+          <p>Ficha de demonstração para desenho do módulo interno.</p>
+        </div>
+        <button class="btn" type="button" id="save-demo">Validar alterações</button>
+      </div>
+
+      <section class="panel" id="identificacao">
+        <div class="panel-head"><h2>Identificação do cliente</h2><span>Dados gerais</span></div>
+        <div class="grid">
+          <label>Nome / firma<input value="Empresa Exemplo, Lda." data-demo-field></label>
+          <label>Código interno<input value="CT-0001" data-demo-field></label>
+          <label>NIF<input value="500000000" inputmode="numeric" maxlength="9" data-demo-field></label>
+          <label>País fiscal<input value="PT" maxlength="2" data-demo-field></label>
+          <label>Forma jurídica<input value="Sociedade por quotas" data-demo-field></label>
+          <label>CAE principal<input value="69200" data-demo-field></label>
+        </div>
+      </section>
+
+      <section class="panel" id="fiscal">
+        <div class="panel-head"><h2>Folha fiscal</h2><span>Enquadramento atual</span></div>
+        <div class="grid">
+          <label>Dimensão da entidade
+            <select id="entity-size" data-demo-field>
+              <option value="micro" selected>Micro</option><option value="small">Pequena</option><option value="medium">Média</option><option value="large">Grande</option>
+            </select>
+          </label>
+          <label>Referencial contabilístico
+            <select data-demo-field><option selected>SNC — Microentidades</option><option>NCRF-PE</option><option>SNC geral</option><option>IAS/IFRS</option></select>
+          </label>
+          <label>IVA
+            <select data-demo-field><option selected>Regime normal</option><option>Isento art. 53.º</option><option>Outro enquadramento</option></select>
+          </label>
+          <label>Periodicidade IVA
+            <select data-demo-field><option>Mensal</option><option selected>Trimestral</option><option>Não aplicável</option></select>
+          </label>
+          <label>IRC
+            <select data-demo-field><option selected>Regime geral</option><option>Transparência fiscal</option><option>Isento</option><option>Outro</option></select>
+          </label>
+          <label>Tem trabalhadores?
+            <select id="has-employees" data-demo-field><option value="yes" selected>Sim</option><option value="no">Não</option></select>
+          </label>
+          <label>Início de atividade<input type="date" value="2024-01-15" data-demo-field></label>
+          <label>Fim do exercício<select data-demo-field><option selected>Dezembro</option><option>Outro mês</option></select></label>
+        </div>
+        <p class="hint">A classificação SNC deve ser validada segundo os limites em vigor e a situação concreta da entidade.</p>
+      </section>
+
+      <section class="panel" id="obrigacoes">
+        <div class="panel-head"><h2>Obrigações e pagamentos</h2><button class="link-button" id="refresh-obligations" type="button">Atualizar sugestões</button></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Obrigação</th><th>Entidade</th><th>Periodicidade / prazo-base</th><th>Pagamento</th><th>Estado</th></tr></thead>
+            <tbody id="obligations-body"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel" id="portais">
+        <div class="panel-head"><h2>Portais oficiais</h2><span>Acesso externo seguro</span></div>
+        <div class="portal-grid">
+          <a class="portal-card" href="https://www.portaldasfinancas.gov.pt/" target="_blank" rel="noopener noreferrer">
+            <strong>Portal das Finanças</strong><span>Obrigações fiscais, declarações, pagamentos e situação fiscal.</span><em>Abrir portal oficial ↗</em>
+          </a>
+          <a class="portal-card" href="https://www.seg-social.pt/ptss/pssd/home" target="_blank" rel="noopener noreferrer">
+            <strong>Segurança Social</strong><span>Declarações, contribuições, trabalhadores e obrigações contributivas.</span><em>Abrir portal oficial ↗</em>
+          </a>
+          <a class="portal-card" href="https://diariodarepublica.pt/" target="_blank" rel="noopener noreferrer">
+            <strong>Diário da República</strong><span>Consulta de legislação publicada e consolidada.</span><em>Pesquisar legislação ↗</em>
+          </a>
+        </div>
+      </section>
+
+      <section class="panel" id="legislacao">
+        <div class="panel-head"><h2>Legislação e referências associadas</h2><span>Referência, não cópia integral</span></div>
+        <div class="legal-toolbar">
+          <input id="legal-search" type="search" placeholder="Pesquisar: IVA, IRC, SNC, faturação, Segurança Social…">
+          <button class="btn secondary" type="button" id="legal-search-button">Pesquisar</button>
+        </div>
+        <div id="legal-results" class="legal-results"></div>
+        <h3 class="subheading">Associadas à ficha</h3>
+        <div id="associated-laws" class="associated-laws"></div>
+      </section>
+
+      <div class="status" id="status" role="status" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <script src="ficha-cliente.js" defer></script>
+</body>
+</html>
