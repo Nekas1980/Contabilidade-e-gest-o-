@@ -72,6 +72,16 @@ USING (
     AND ct_app.current_role_name() IS NOT NULL
 );
 
+-- Política de bootstrap: só produz efeito para contas SQL que tenham
+-- privilégio INSERT explícito. O role runtime definido no projeto NÃO recebe esse privilégio.
+CREATE POLICY organizations_bootstrap_insert
+ON ct_app.organizations
+FOR INSERT
+WITH CHECK (
+    id = ct_app.current_organization_id()
+    AND ct_app.current_user_id() IS NOT NULL
+);
+
 CREATE POLICY organizations_owner_update
 ON ct_app.organizations
 FOR UPDATE
@@ -84,12 +94,22 @@ WITH CHECK (
     AND ct_app.current_role_name() = 'owner'
 );
 
--- MEMBERSHIPS: leitura limitada à organização. Alterações de memberships
--- ficam fora do runtime normal e devem usar um fluxo administrativo específico.
+-- MEMBERSHIPS: leitura limitada à organização. Alterações correntes de
+-- memberships ficam fora do runtime normal.
 CREATE POLICY memberships_read
 ON ct_app.organization_memberships
 FOR SELECT
 USING (organization_id = ct_app.current_organization_id());
+
+-- Bootstrap do primeiro owner. Tal como acima, a policy não concede privilégios SQL.
+CREATE POLICY memberships_bootstrap_insert
+ON ct_app.organization_memberships
+FOR INSERT
+WITH CHECK (
+    organization_id = ct_app.current_organization_id()
+    AND user_id = ct_app.current_user_id()
+    AND role_name = 'owner'
+);
 
 -- UTILIZADOR: acesso apenas ao próprio perfil aplicacional.
 CREATE POLICY app_users_self
@@ -119,7 +139,6 @@ WITH CHECK (
     AND ct_app.current_role_name() IN ('owner','accountant','assistant')
 );
 
--- CLIENTES.
 CREATE POLICY clients_read
 ON ct_app.clients
 FOR SELECT
@@ -140,7 +159,6 @@ WITH CHECK (
     AND ct_app.current_role_name() IN ('owner','accountant','assistant')
 );
 
--- CONTACTOS DE CLIENTE.
 CREATE POLICY client_contacts_read
 ON ct_app.client_contacts
 FOR SELECT
@@ -161,7 +179,6 @@ WITH CHECK (
     AND ct_app.current_role_name() IN ('owner','accountant','assistant')
 );
 
--- TAREFAS OPERACIONAIS.
 CREATE POLICY work_items_read
 ON ct_app.work_items
 FOR SELECT
@@ -182,8 +199,6 @@ WITH CHECK (
     AND ct_app.current_role_name() IN ('owner','accountant','assistant')
 );
 
--- METADADOS DOCUMENTAIS. O perfil technical fica deliberadamente excluído
--- dos dados funcionais de clientes.
 CREATE POLICY document_metadata_read
 ON ct_app.document_metadata
 FOR SELECT
@@ -204,8 +219,6 @@ WITH CHECK (
     AND ct_app.current_role_name() IN ('owner','accountant','assistant')
 );
 
--- AUDITORIA: owner/accountant/technical podem consultar eventos técnicos,
--- mas a permissão SQL final deve continuar a ser atribuída explicitamente.
 CREATE POLICY audit_events_select_context
 ON ct_audit.audit_events
 FOR SELECT
