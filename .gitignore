@@ -1,0 +1,36 @@
+# Segredos e configuração local
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+secrets/
+
+# Base de dados / exports locais
+*.sql.gz
+*.dump
+*.backup
+backups/
+exports/
+
+# Logs
+*.log
+logs/
+
+# Node / API futura
+node_modules/
+dist/
+build/
+coverage/
+
+# IDE / sistema
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Temporários
+*.tmp
+*.swp

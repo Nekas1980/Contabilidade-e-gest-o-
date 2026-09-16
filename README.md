@@ -1,55 +1,215 @@
-<!DOCTYPE html>
-<html lang="pt">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CT Contabilidade e Gestão</title>
-    <style>
-        body { font-family: 'Segoe UI', Arial, sans-serif; text-align: center; padding: 20px; background-color: #1a1a1a; color: #f4f4f4; margin: 0; }
-        .card { background: #ffffff; color: #333; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); max-width: 450px; margin: 20px auto; border-top: 5px solid #d4af37; }
-        h1 { color: #1a1a1a; font-size: 26px; margin-bottom: 5px; }
-        h2 { color: #d4af37; font-size: 18px; margin-top: 0; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px; }
-        .texto-principal { text-align: left; line-height: 1.6; margin-bottom: 25px; font-size: 15px; color: #444; }
-        .check { color: #27ae60; font-weight: bold; margin-right: 5px; }
-        .btn { display: flex; align-items: center; justify-content: center; background-color: #25d366; color: white; padding: 15px; margin: 10px 0; border-radius: 10px; text-decoration: none; font-weight: bold; font-size: 16px; transition: 0.3s; }
-        .btn-email { background-color: #c0392b; }
-        .btn:hover { transform: scale(1.02); opacity: 0.9; }
-        .footer { margin-top: 30px; font-size: 11px; color: #666; }
-        hr { border: 0; border-top: 1px solid #eee; margin: 20px 0; }
-    </style>
-</head>
-<body>
+# CT Contabilidade e Gestão
 
-    <div class="card">
-        <h1>CT Contabilidade</h1>
-        <h2>Gestão e Consultoria</h2>
-        
-        <div class="texto-principal">
-            <p>A sua contabilidade está a fazer o seu negócio crescer... ou apenas a cumprir obrigações?</p>
-            <p><strong>Se quer:</strong></p>
-            <div><span class="check">✔</span> Menos imposto desnecessário</div>
-            <div><span class="check">✔</span> Mais controlo financeiro</div>
-            <div><span class="check">✔</span> Mais lucro e previsibilidade</div>
-            <br>
-            <p>Está na altura de mudar de parceiro. Contacte-nos já:</p>
-        </div>
+Projeto digital em evolução para utilização real por uma profissional da área de contabilidade e gestão e, em paralelo, caso de estudo/portefólio em desenvolvimento web, PostgreSQL e segurança aplicacional.
 
-        <hr>
+O projeto começou como um cartão de visita digital simples. Está a ser transformado, de forma incremental, numa presença online profissional e numa arquitetura preparada para futura operação interna segura.
 
-        <a href="https://wa.me/351928207611" class="btn">
-            📱 Falar via WhatsApp
-        </a>
+## Estado atual
 
-        <a href="mailto:ctcontabilidadeegestao@gmail.com" class="btn btn-email">
-            📧 Enviar E-mail
-        </a>
-    </div>
+A nova versão encontra-se na branch:
 
-    <div class="footer">
-        © 2024 CT Contabilidade e Gestão<br>
-        Criado por Nekas1980
-    </div>
+```text
+redesign-profissional
+```
 
-</body>
-</html>
+A branch `main` mantém a versão anterior até conclusão da revisão e validação do conteúdo com a contabilista.
 
+Consulte:
+
+- [`PROJECT_STATUS.md`](PROJECT_STATUS.md) — estado, concluído e pendente.
+- [`ROADMAP.md`](ROADMAP.md) — evolução técnica e profissional.
+- [`docs/01_ARQUITETURA_E_METODOS.md`](docs/01_ARQUITETURA_E_METODOS.md) — arquitetura e métodos do website.
+- [`docs/02_GUIA_ESTUDO.md`](docs/02_GUIA_ESTUDO.md) — estudo do frontend.
+- [`docs/03_CURRICULO_E_PORTFOLIO.md`](docs/03_CURRICULO_E_PORTFOLIO.md) — apresentação profissional do projeto.
+- [`docs/04_PUBLICACAO_E_CONFORMIDADE.md`](docs/04_PUBLICACAO_E_CONFORMIDADE.md) — preparação para utilização real.
+- [`docs/05_REFERENCIAS_PROFISSIONAIS.md`](docs/05_REFERENCIAS_PROFISSIONAIS.md) — referências profissionais.
+- [`docs/06_DADOS_A_CONFIRMAR_COM_CONTABILISTA.md`](docs/06_DADOS_A_CONFIRMAR_COM_CONTABILISTA.md) — levantamento antes da publicação.
+- [`docs/07_COLABORACAO_E_EVOLUCAO.md`](docs/07_COLABORACAO_E_EVOLUCAO.md) — colaboração negócio/tecnologia.
+- [`docs/08_BASE_DADOS_E_SEGURANCA.md`](docs/08_BASE_DADOS_E_SEGURANCA.md) — manual PostgreSQL e segurança.
+- [`database/README.md`](database/README.md) — arquitetura e scripts da base de dados.
+
+## Arquitetura
+
+### Website público atual
+
+```text
+Browser
+  ├── index.html
+  ├── assets/styles.css
+  └── assets/app.js
+```
+
+O formulário público continua sem guardar dados numa base própria: prepara a mensagem localmente e abre o WhatsApp.
+
+### Aplicação futura
+
+```text
+Frontend
+   |
+ HTTPS
+   |
+API / Backend
+   |
+PostgreSQL
+   ├── ct_app
+   └── ct_audit
+```
+
+**O frontend nunca liga diretamente ao PostgreSQL.**
+
+## Website
+
+Funcionalidades principais:
+
+- layout institucional responsivo;
+- navegação mobile;
+- apresentação objetiva de serviços;
+- processo de acompanhamento;
+- público-alvo e FAQ;
+- contacto por WhatsApp/e-mail;
+- formulário local;
+- SEO/Open Graph/Schema.org básicos;
+- acessibilidade;
+- `robots.txt`.
+
+## Base de dados — fundação
+
+A pasta `database/` contém uma primeira arquitetura PostgreSQL orientada a segurança e aprendizagem.
+
+Inclui:
+
+- schemas próprios `ct_app` e `ct_audit`;
+- organizações e utilizadores;
+- memberships/perfis;
+- leads;
+- clientes e contactos;
+- tarefas;
+- metadados documentais;
+- constraints e índices;
+- triggers;
+- Row-Level Security;
+- isolamento por organização;
+- políticas por perfil;
+- auditoria;
+- role runtime com least privilege;
+- dados fictícios para laboratório.
+
+Perfis previstos:
+
+```text
+owner
+accountant
+assistant
+technical
+read_only
+```
+
+O perfil `technical` está deliberadamente separado do acesso normal aos dados funcionais de clientes.
+
+## Segurança por desenho
+
+Princípios aplicados:
+
+- frontend sem segredos;
+- PostgreSQL atrás de API;
+- least privilege;
+- RBAC;
+- RLS;
+- defesa em profundidade;
+- separação de funções;
+- auditoria;
+- minimização de dados em logs;
+- dados sintéticos no portefólio;
+- `.gitignore` para `.env`, chaves, dumps, backups e artefactos locais;
+- nenhuma password versionada.
+
+A base de dados ainda não foi executada contra dados reais. Nesta fase é uma fundação versionada para laboratório e testes.
+
+## Estrutura
+
+```text
+.
+├── index.html
+├── robots.txt
+├── .gitignore
+├── README.md
+├── PROJECT_STATUS.md
+├── ROADMAP.md
+├── assets/
+│   ├── app.js
+│   └── styles.css
+├── database/
+│   ├── README.md
+│   ├── 01_schema.sql
+│   ├── 02_security_rls.sql
+│   ├── 03_audit.sql
+│   ├── 04_seed_demo.sql
+│   └── 05_runtime_permissions.sql
+└── docs/
+    ├── 01_ARQUITETURA_E_METODOS.md
+    ├── 02_GUIA_ESTUDO.md
+    ├── 03_CURRICULO_E_PORTFOLIO.md
+    ├── 04_PUBLICACAO_E_CONFORMIDADE.md
+    ├── 05_REFERENCIAS_PROFISSIONAIS.md
+    ├── 06_DADOS_A_CONFIRMAR_COM_CONTABILISTA.md
+    ├── 07_COLABORACAO_E_EVOLUCAO.md
+    └── 08_BASE_DADOS_E_SEGURANCA.md
+```
+
+## Stack atual / prevista
+
+### Implementado
+
+- HTML5
+- CSS3
+- JavaScript vanilla
+- PostgreSQL SQL/PLpgSQL (scripts versionados)
+- Git / GitHub
+
+### Próxima fase
+
+- API backend;
+- autenticação;
+- queries parametrizadas;
+- RBAC no backend;
+- contexto RLS por request;
+- testes automatizados;
+- gestão de segredos;
+- logging e rate limiting.
+
+## Dados reais
+
+Até a camada backend e os controlos operacionais estarem implementados e testados, utilizar apenas dados sintéticos na base de laboratório.
+
+Não colocar no repositório:
+
+- dados reais de clientes;
+- NIF/IBAN/documentos contabilísticos;
+- passwords;
+- tokens;
+- chaves privadas;
+- `.env` real;
+- dumps/backups de produção.
+
+## Portefólio
+
+O projeto passa a demonstrar competências em:
+
+- análise de requisitos;
+- frontend e UX;
+- PostgreSQL e modelação relacional;
+- SQL/PLpgSQL;
+- constraints, índices e triggers;
+- RBAC e Row-Level Security;
+- auditoria;
+- least privilege;
+- security/privacy by design;
+- Git/GitHub e Pull Requests;
+- documentação técnica;
+- evolução de um projeto para utilização real.
+
+## Autor / manutenção técnica
+
+Projeto desenvolvido e mantido no GitHub por [Nekas1980](https://github.com/Nekas1980).
+
+A validação do conteúdo contabilístico, fiscal, profissional e deontológico pertence à profissional responsável. A vertente tecnológica deve manter separação clara de responsabilidades e acessos.
