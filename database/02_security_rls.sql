@@ -89,9 +89,20 @@ ON ct_app.document_metadata
 USING (organization_id = ct_app.current_organization_id())
 WITH CHECK (organization_id = ct_app.current_organization_id());
 
-CREATE POLICY audit_events_isolation
+CREATE POLICY audit_events_select_context
 ON ct_audit.audit_events
 FOR SELECT
 USING (organization_id = ct_app.current_organization_id());
+
+CREATE POLICY audit_events_insert_context
+ON ct_audit.audit_events
+FOR INSERT
+WITH CHECK (
+    organization_id = ct_app.current_organization_id()
+    AND (
+        actor_user_id = ct_app.current_user_id()
+        OR actor_user_id IS NULL
+    )
+);
 
 COMMIT;
