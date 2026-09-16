@@ -23,11 +23,25 @@ AS $$
     SELECT NULLIF(current_setting('app.current_user_id', true), '')::uuid;
 $$;
 
--- A API deve definir estes valores dentro de cada transação APENAS depois
+-- Não usar esta função em policies da própria organization_memberships,
+-- para evitar recursão de RLS.
+CREATE OR REPLACE FUNCTION ct_app.current_role_name()
+RETURNS text
+LANGUAGE sql
+STABLE
+AS $$
+    SELECT m.role_name
+      FROM ct_app.organization_memberships AS m
+     WHERE m.organization_id = ct_app.current_organization_id()
+       AND m.user_id = ct_app.current_user_id()
+     LIMIT 1;
+$$;
+
+-- A API define estes valores dentro de cada transação APENAS depois
 -- de autenticar o utilizador e validar a respetiva organização.
--- Exemplo no backend:
 -- SET LOCAL app.current_user_id = '<uuid-validado>';
 -- SET LOCAL app.current_organization_id = '<uuid-validado>';
+-- SET LOCAL app.request_id = '<correlation-id>';
 
 ALTER TABLE ct_app.organizations ENABLE ROW LEVEL SECURITY;
 ALTER TABLE ct_app.organization_memberships ENABLE ROW LEVEL SECURITY;
@@ -49,51 +63,159 @@ ALTER TABLE ct_app.work_items FORCE ROW LEVEL SECURITY;
 ALTER TABLE ct_app.document_metadata FORCE ROW LEVEL SECURITY;
 ALTER TABLE ct_audit.audit_events FORCE ROW LEVEL SECURITY;
 
-CREATE POLICY organizations_isolation
+-- ORGANIZAÇÃO: membros podem consultar; apenas owner pode alterar.
+CREATE POLICY organizations_read
 ON ct_app.organizations
-USING (id = ct_app.current_organization_id())
-WITH CHECK (id = ct_app.current_organization_id());
+FOR SELECT
+USING (
+    id = ct_app.current_organization_id()
+    AND ct_app.current_role_name() IS NOT NULL
+);
 
-CREATE POLICY memberships_isolation
+CREATE POLICY organizations_owner_update
+ON ct_app.organizations
+FOR UPDATE
+USING (
+    id = ct_app.current_organization_id()
+    AND ct_app.current_role_name() = 'owner'
+)
+WITH CHECK (
+    id = ct_app.current_organization_id()
+    AND ct_app.current_role_name() = 'owner'
+);
+
+-- MEMBERSHIPS: leitura limitada à organização. Alterações de memberships
+-- ficam fora do runtime normal e devem usar um fluxo administrativo específico.
+CREATE POLICY memberships_read
 ON ct_app.organization_memberships
-USING (organization_id = ct_app.current_organization_id())
-WITH CHECK (organization_id = ct_app.current_organization_id());
-
-CREATE POLICY app_users_self
-ON ct_app.app_users
-USING (id = ct_app.current_user_id())
-WITH CHECK (id = ct_app.current_user_id());
-
-CREATE POLICY leads_isolation
-ON ct_app.leads
-USING (organization_id = ct_app.current_organization_id())
-WITH CHECK (organization_id = ct_app.current_organization_id());
-
-CREATE POLICY clients_isolation
-ON ct_app.clients
-USING (organization_id = ct_app.current_organization_id())
-WITH CHECK (organization_id = ct_app.current_organization_id());
-
-CREATE POLICY client_contacts_isolation
-ON ct_app.client_contacts
-USING (organization_id = ct_app.current_organization_id())
-WITH CHECK (organization_id = ct_app.current_organization_id());
-
-CREATE POLICY work_items_isolation
-ON ct_app.work_items
-USING (organization_id = ct_app.current_organization_id())
-WITH CHECK (organization_id = ct_app.current_organization_id());
-
-CREATE POLICY document_metadata_isolation
-ON ct_app.document_metadata
-USING (organization_id = ct_app.current_organization_id())
-WITH CHECK (organization_id = ct_app.current_organization_id());
-
-CREATE POLICY audit_events_select_context
-ON ct_audit.audit_events
 FOR SELECT
 USING (organization_id = ct_app.current_organization_id());
 
+-- UTILIZADOR: acesso apenas ao próprio perfil aplicacional.
+CREATE POLICY app_users_self
+ON ct_app.app_users
+FOR ALL
+USING (id = ct_app.current_user_id())
+WITH CHECK (id = ct_app.current_user_id());
+
+-- LEADS: leitura para equipa funcional; escrita sem read_only/technical.
+CREATE POLICY leads_read
+ON ct_app.leads
+FOR SELECT
+USING (
+    organization_id = ct_app.current_organization_id()
+    AND ct_app.current_role_name() IN ('owner','accountant','assistant','read_only')
+);
+
+CREATE POLICY leads_write
+ON ct_app.leads
+FOR ALL
+USING (
+    organization_id = ct_app.current_organization_id()
+    AND ct_app.current_role_name() IN ('owner','accountant','assistant')
+)
+WITH CHECK (
+    organization_id = ct_app.current_organization_id()
+    AND ct_app.current_role_name() IN ('owner','accountant','assistant')
+);
+
+-- CLIENTES.
+CREATE POLICY clients_read
+ON ct_app.clients
+FOR SELECT
+USING (
+    organization_id = ct_app.current_organization_id()
+    AND ct_app.current_role_name() IN ('owner','accountant','assistant','read_only')
+);
+
+CREATE POLICY clients_write
+ON ct_app.clients
+FOR ALL
+USING (
+    organization_id = ct_app.current_organization_id()
+    AND ct_app.current_role_name() IN ('owner','accountant','assistant')
+)
+WITH CHECK (
+    organization_id = ct_app.current_organization_id()
+    AND ct_app.current_role_name() IN ('owner','accountant','assistant')
+);
+
+-- CONTACTOS DE CLIENTE.
+CREATE POLICY client_contacts_read
+ON ct_app.client_contacts
+FOR SELECT
+USING (
+    organization_id = ct_app.current_organization_id()
+    AND ct_app.current_role_name() IN ('owner','accountant','assistant','read_only')
+);
+
+CREATE POLICY client_contacts_write
+ON ct_app.client_contacts
+FOR ALL
+USING (
+    organization_id = ct_app.current_organization_id()
+    AND ct_app.current_role_name() IN ('owner','accountant','assistant')
+)
+WITH CHECK (
+    organization_id = ct_app.current_organization_id()
+    AND ct_app.current_role_name() IN ('owner','accountant','assistant')
+);
+
+-- TAREFAS OPERACIONAIS.
+CREATE POLICY work_items_read
+ON ct_app.work_items
+FOR SELECT
+USING (
+    organization_id = ct_app.current_organization_id()
+    AND ct_app.current_role_name() IN ('owner','accountant','assistant','read_only')
+);
+
+CREATE POLICY work_items_write
+ON ct_app.work_items
+FOR ALL
+USING (
+    organization_id = ct_app.current_organization_id()
+    AND ct_app.current_role_name() IN ('owner','accountant','assistant')
+)
+WITH CHECK (
+    organization_id = ct_app.current_organization_id()
+    AND ct_app.current_role_name() IN ('owner','accountant','assistant')
+);
+
+-- METADADOS DOCUMENTAIS. O perfil technical fica deliberadamente excluído
+-- dos dados funcionais de clientes.
+CREATE POLICY document_metadata_read
+ON ct_app.document_metadata
+FOR SELECT
+USING (
+    organization_id = ct_app.current_organization_id()
+    AND ct_app.current_role_name() IN ('owner','accountant','assistant','read_only')
+);
+
+CREATE POLICY document_metadata_write
+ON ct_app.document_metadata
+FOR ALL
+USING (
+    organization_id = ct_app.current_organization_id()
+    AND ct_app.current_role_name() IN ('owner','accountant','assistant')
+)
+WITH CHECK (
+    organization_id = ct_app.current_organization_id()
+    AND ct_app.current_role_name() IN ('owner','accountant','assistant')
+);
+
+-- AUDITORIA: owner/accountant/technical podem consultar eventos técnicos,
+-- mas a permissão SQL final deve continuar a ser atribuída explicitamente.
+CREATE POLICY audit_events_select_context
+ON ct_audit.audit_events
+FOR SELECT
+USING (
+    organization_id = ct_app.current_organization_id()
+    AND ct_app.current_role_name() IN ('owner','accountant','technical')
+);
+
+-- Necessária para o trigger SECURITY DEFINER sob FORCE RLS.
+-- A conta runtime não deve receber INSERT direto nesta tabela.
 CREATE POLICY audit_events_insert_context
 ON ct_audit.audit_events
 FOR INSERT
