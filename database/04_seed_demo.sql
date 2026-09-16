@@ -17,7 +17,7 @@ VALUES (
 INSERT INTO ct_app.app_users (id, auth_subject, email, full_name)
 VALUES (
     '22222222-2222-4222-8222-222222222222',
-    'demo|nelson-portfolio',
+    'demo|portfolio-user',
     'demo@example.invalid',
     'Utilizador Demo'
 );
@@ -26,7 +26,7 @@ INSERT INTO ct_app.organization_memberships (organization_id, user_id, role_name
 VALUES (
     '11111111-1111-4111-8111-111111111111',
     '22222222-2222-4222-8222-222222222222',
-    'technical'
+    'owner'
 );
 
 INSERT INTO ct_app.leads (
