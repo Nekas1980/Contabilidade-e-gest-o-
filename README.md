@@ -23,6 +23,7 @@ Consulte também:
 - [`docs/03_CURRICULO_E_PORTFOLIO.md`](docs/03_CURRICULO_E_PORTFOLIO.md) — apresentação do projeto em CV, GitHub, LinkedIn e entrevistas.
 - [`docs/04_PUBLICACAO_E_CONFORMIDADE.md`](docs/04_PUBLICACAO_E_CONFORMIDADE.md) — preparação para utilização profissional.
 - [`docs/05_REFERENCIAS_PROFISSIONAIS.md`](docs/05_REFERENCIAS_PROFISSIONAIS.md) — fontes oficiais e critérios usados no conteúdo profissional.
+- [`docs/06_DADOS_A_CONFIRMAR_COM_CONTABILISTA.md`](docs/06_DADOS_A_CONFIRMAR_COM_CONTABILISTA.md) — ficha de levantamento para fechar dados e conteúdo antes da publicação.
 
 ## Objetivos
 
@@ -70,7 +71,8 @@ Consulte também:
     ├── 02_GUIA_ESTUDO.md
     ├── 03_CURRICULO_E_PORTFOLIO.md
     ├── 04_PUBLICACAO_E_CONFORMIDADE.md
-    └── 05_REFERENCIAS_PROFISSIONAIS.md
+    ├── 05_REFERENCIAS_PROFISSIONAIS.md
+    └── 06_DADOS_A_CONFIRMAR_COM_CONTABILISTA.md
 ```
 
 ## Stack
