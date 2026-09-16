@@ -39,7 +39,8 @@ Nunca colocar no HTML/JavaScript do browser:
 - API keys privadas;
 - JWT signing secrets;
 - chaves de cifragem;
-- credenciais de produção.
+- credenciais de produção;
+- passwords, PINs, códigos 2FA, CMD ou tokens do Portal das Finanças/Segurança Social.
 
 O frontend comunica com uma API. Só a API comunica com PostgreSQL.
 
@@ -50,6 +51,7 @@ O frontend comunica com uma API. Só a API comunica com PostgreSQL.
 3. `03_audit.sql` — auditoria de alterações sem duplicar automaticamente os dados dos registos.
 4. `04_seed_demo.sql` — dados exclusivamente fictícios para desenvolvimento e estudo.
 5. `05_runtime_permissions.sql` — role de serviço com privilégios mínimos para a futura API.
+6. `06_client_fiscal_module.sql` — folha fiscal, obrigações/pagamentos e referências legais associadas a clientes, com RLS, grants e auditoria.
 
 ## Modelo inicial
 
@@ -70,16 +72,27 @@ Perfis iniciais:
 - `technical`
 - `read_only`
 
-O perfil `technical` fica deliberadamente sem acesso normal aos dados funcionais de clientes. Pode ter acesso a eventos técnicos de auditoria quando necessário. Isto aplica separação de funções e least privilege.
+O perfil `technical` fica deliberadamente sem acesso normal aos dados funcionais e fiscais de clientes. Pode ter acesso a eventos técnicos de auditoria quando necessário. Isto aplica separação de funções e least privilege.
 
 ### `ct_app.leads`
 Pedidos/contactos comerciais estruturados.
 
 ### `ct_app.clients`
-Registo mínimo de clientes. Nesta fase não contém NIF, IBAN, dados fiscais detalhados ou outros dados de risco elevado.
+Registo-base de clientes.
 
 ### `ct_app.client_contacts`
 Canais de contacto associados a clientes.
+
+### `ct_app.client_fiscal_profiles`
+Folha fiscal interna por cliente. Pode registar NIF/identificador fiscal, CAE, dimensão, referencial contabilístico, IVA, IRC, existência de trabalhadores e outros elementos de enquadramento.
+
+Não contém credenciais de acesso a portais oficiais.
+
+### `ct_app.client_obligations`
+Obrigações declarativas e de pagamento por cliente, incluindo entidade responsável, periodicidade, regra de prazo, próxima data, estado, fundamento legal e URL oficial.
+
+### `ct_app.client_legal_references`
+Referências legais associadas a um cliente. Guarda título, citação, URL oficial, vigência/data de validação e notas — não cópias integrais da legislação.
 
 ### `ct_app.work_items`
 Tarefas e acompanhamento operacional.
@@ -146,6 +159,7 @@ Numa base de dados vazia de desenvolvimento:
 02_security_rls.sql
 03_audit.sql
 05_runtime_permissions.sql
+06_client_fiscal_module.sql
 04_seed_demo.sql   # executar com a conta de migração/owner, não com ct_app_runtime
 ```
 
@@ -162,6 +176,7 @@ Não colocar no GitHub:
 - nomes reais de clientes;
 - NIF;
 - moradas privadas;
+- NISS/dados contributivos reais;
 - IBAN;
 - documentos contabilísticos;
 - passwords;
@@ -172,7 +187,7 @@ Não colocar no GitHub:
 
 ## Próxima etapa técnica
 
-Criar uma API separada com:
+Criar a API interna autenticada com:
 
 - autenticação;
 - RBAC;
@@ -180,9 +195,10 @@ Criar uma API separada com:
 - queries parametrizadas;
 - transações;
 - configuração de RLS por request;
+- endpoints de ficha fiscal, obrigações e referências legais;
 - tratamento centralizado de erros;
 - logging seguro;
 - rate limiting;
 - testes de autorização e isolamento.
 
-A API será o único caminho permitido entre o frontend e a base de dados.
+A API será o único caminho permitido entre o frontend interno e a base de dados.
