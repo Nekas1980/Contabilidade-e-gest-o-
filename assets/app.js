@@ -38,7 +38,7 @@ if (contactForm) {
     const message = String(data.get('mensagem') || '').trim();
 
     if (!name || !need) {
-      if (formStatus) formStatus.textContent = 'Preencha, pelo menos, o nome e o tipo de apoio pretendido.';
+      if (formStatus) formStatus.textContent = 'Preencha, pelo menos, o nome e a área sobre a qual pretende informação.';
       return;
     }
 
@@ -47,10 +47,10 @@ if (contactForm) {
       '',
       `O meu nome é ${name}.`,
       company ? `Empresa/atividade: ${company}.` : '',
-      `Pretendo apoio em: ${need}.`,
+      `Pretendo obter informação sobre: ${need}.`,
       message ? `Mensagem: ${message}` : '',
       '',
-      'Gostaria de perceber qual a solução mais adequada para o meu caso.'
+      'Gostaria de obter informação sobre o acompanhamento disponível para esta situação.'
     ].filter(Boolean).join('\n');
 
     const url = `https://wa.me/351928207611?text=${encodeURIComponent(text)}`;
