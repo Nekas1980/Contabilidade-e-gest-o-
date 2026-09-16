@@ -2,49 +2,14 @@
 
 Projeto digital em evolução para utilização real por uma profissional da área de contabilidade e gestão e, em paralelo, caso de estudo/portefólio em desenvolvimento web, PostgreSQL e segurança aplicacional.
 
-O projeto começou como um cartão de visita digital simples. Está a ser transformado, de forma incremental, numa presença online profissional e numa arquitetura preparada para futura operação interna segura.
-
 ## Estado atual
 
-A nova versão encontra-se na branch:
-
-```text
-redesign-profissional
-```
-
-A branch `main` mantém a versão anterior até conclusão da revisão e validação do conteúdo com a contabilista.
-
-Consulte:
-
-- [`PROJECT_STATUS.md`](PROJECT_STATUS.md) — estado, concluído e pendente.
-- [`ROADMAP.md`](ROADMAP.md) — evolução técnica e profissional.
-- [`docs/01_ARQUITETURA_E_METODOS.md`](docs/01_ARQUITETURA_E_METODOS.md) — arquitetura e métodos do website.
-- [`docs/02_GUIA_ESTUDO.md`](docs/02_GUIA_ESTUDO.md) — estudo do frontend.
-- [`docs/03_CURRICULO_E_PORTFOLIO.md`](docs/03_CURRICULO_E_PORTFOLIO.md) — apresentação profissional do projeto.
-- [`docs/04_PUBLICACAO_E_CONFORMIDADE.md`](docs/04_PUBLICACAO_E_CONFORMIDADE.md) — preparação para utilização real.
-- [`docs/05_REFERENCIAS_PROFISSIONAIS.md`](docs/05_REFERENCIAS_PROFISSIONAIS.md) — referências profissionais.
-- [`docs/06_DADOS_A_CONFIRMAR_COM_CONTABILISTA.md`](docs/06_DADOS_A_CONFIRMAR_COM_CONTABILISTA.md) — levantamento antes da publicação.
-- [`docs/07_COLABORACAO_E_EVOLUCAO.md`](docs/07_COLABORACAO_E_EVOLUCAO.md) — colaboração negócio/tecnologia.
-- [`docs/08_BASE_DADOS_E_SEGURANCA.md`](docs/08_BASE_DADOS_E_SEGURANCA.md) — manual PostgreSQL e segurança.
-- [`database/README.md`](database/README.md) — arquitetura e scripts da base de dados.
+O website público profissional está em `main`. A evolução de contacto privado, backend, legislação e área interna encontra-se na branch `contacto-discreto-backend-ready` e no PR #3.
 
 ## Arquitetura
 
-### Website público atual
-
 ```text
-Browser
-  ├── index.html
-  ├── assets/styles.css
-  └── assets/app.js
-```
-
-O formulário público continua sem guardar dados numa base própria: prepara a mensagem localmente e abre o WhatsApp.
-
-### Aplicação futura
-
-```text
-Frontend
+Website público
    |
  HTTPS
    |
@@ -53,43 +18,41 @@ API / Backend
 PostgreSQL
    ├── ct_app
    └── ct_audit
+
+Área interna autenticada
+   ├── clientes
+   ├── ficha fiscal
+   ├── obrigações/pagamentos
+   └── referências legais
 ```
 
-**O frontend nunca liga diretamente ao PostgreSQL.**
+O frontend nunca liga diretamente ao PostgreSQL e o website público não publica a pasta `internal/`.
 
-## Website
-
-Funcionalidades principais:
-
-- layout institucional responsivo;
-- navegação mobile;
-- apresentação objetiva de serviços;
-- processo de acompanhamento;
-- público-alvo e FAQ;
-- contacto por WhatsApp/e-mail;
-- formulário local;
-- SEO/Open Graph/Schema.org básicos;
-- acessibilidade;
-- `robots.txt`.
-
-## Base de dados — fundação
-
-A pasta `database/` contém uma primeira arquitetura PostgreSQL orientada a segurança e aprendizagem.
+## Website público
 
 Inclui:
 
-- schemas próprios `ct_app` e `ct_audit`;
+- layout institucional responsivo;
+- serviços e metodologia;
+- formulário preparado para envio privado via backend;
+- área pesquisável de legislação/obrigações 2026;
+- SEO, acessibilidade e GitHub Pages;
+- testes de links e de exposição acidental de contactos privados.
+
+## Base de dados
+
+A pasta `database/` contém a fundação PostgreSQL orientada a segurança:
+
 - organizações e utilizadores;
 - memberships/perfis;
 - leads;
 - clientes e contactos;
 - tarefas;
 - metadados documentais;
-- constraints e índices;
-- triggers;
-- Row-Level Security;
-- isolamento por organização;
-- políticas por perfil;
+- folha fiscal por cliente;
+- obrigações e pagamentos por cliente;
+- referências legais por cliente;
+- RLS e isolamento por organização;
 - auditoria;
 - role runtime com least privilege;
 - dados fictícios para laboratório.
@@ -104,109 +67,78 @@ technical
 read_only
 ```
 
-O perfil `technical` está deliberadamente separado do acesso normal aos dados funcionais de clientes.
+O perfil `technical` está deliberadamente separado do acesso normal aos dados funcionais/fiscais de clientes.
+
+## Área interna
+
+`internal/ficha-cliente.html` é um protótipo não publicado com dados fictícios. Demonstra:
+
+- identificação do cliente;
+- NIF/CAE e enquadramento fiscal;
+- dimensão e referencial contabilístico;
+- IVA e IRC;
+- trabalhadores/Segurança Social;
+- obrigações e pagamentos;
+- atalhos para Portal das Finanças, Segurança Social e Diário da República;
+- pesquisa e associação de referências legais.
+
+O protótipo não grava dados. A persistência real só será ativada com autenticação, API e PostgreSQL testado.
 
 ## Segurança por desenho
-
-Princípios aplicados:
 
 - frontend sem segredos;
 - PostgreSQL atrás de API;
 - least privilege;
-- RBAC;
-- RLS;
+- RBAC + RLS;
 - defesa em profundidade;
 - separação de funções;
 - auditoria;
 - minimização de dados em logs;
-- dados sintéticos no portefólio;
-- `.gitignore` para `.env`, chaves, dumps, backups e artefactos locais;
-- nenhuma password versionada.
+- `.env` e credenciais excluídos do Git;
+- nenhuma password de Finanças/Segurança Social guardada;
+- área interna excluída do artefacto GitHub Pages e marcada `noindex,nofollow`;
+- dados reais proibidos no repositório.
 
-A base de dados ainda não foi executada contra dados reais. Nesta fase é uma fundação versionada para laboratório e testes.
-
-## Estrutura
+## Ficheiros principais
 
 ```text
 .
 ├── index.html
-├── robots.txt
-├── .gitignore
-├── README.md
-├── PROJECT_STATUS.md
-├── ROADMAP.md
+├── legislacao.html
 ├── assets/
-│   ├── app.js
-│   └── styles.css
+├── api/
+│   └── contact.js
+├── internal/
+│   ├── ficha-cliente.html
+│   ├── ficha-cliente.css
+│   └── ficha-cliente.js
 ├── database/
-│   ├── README.md
 │   ├── 01_schema.sql
 │   ├── 02_security_rls.sql
 │   ├── 03_audit.sql
 │   ├── 04_seed_demo.sql
-│   └── 05_runtime_permissions.sql
+│   ├── 05_runtime_permissions.sql
+│   └── 06_client_fiscal_module.sql
 └── docs/
-    ├── 01_ARQUITETURA_E_METODOS.md
-    ├── 02_GUIA_ESTUDO.md
-    ├── 03_CURRICULO_E_PORTFOLIO.md
-    ├── 04_PUBLICACAO_E_CONFORMIDADE.md
-    ├── 05_REFERENCIAS_PROFISSIONAIS.md
-    ├── 06_DADOS_A_CONFIRMAR_COM_CONTABILISTA.md
-    ├── 07_COLABORACAO_E_EVOLUCAO.md
-    └── 08_BASE_DADOS_E_SEGURANCA.md
+    ├── 08_BASE_DADOS_E_SEGURANCA.md
+    ├── 09_CONTACTO_BACKEND_DOMINIO.md
+    ├── 10_LEGISLACAO_OBRIGACOES_2026.md
+    └── 11_FICHA_CLIENTE_FISCAL.md
 ```
-
-## Stack atual / prevista
-
-### Implementado
-
-- HTML5
-- CSS3
-- JavaScript vanilla
-- PostgreSQL SQL/PLpgSQL (scripts versionados)
-- Git / GitHub
-
-### Próxima fase
-
-- API backend;
-- autenticação;
-- queries parametrizadas;
-- RBAC no backend;
-- contexto RLS por request;
-- testes automatizados;
-- gestão de segredos;
-- logging e rate limiting.
 
 ## Dados reais
 
-Até a camada backend e os controlos operacionais estarem implementados e testados, utilizar apenas dados sintéticos na base de laboratório.
+Até a camada backend/autenticação estar implementada e testada, usar apenas dados sintéticos.
 
-Não colocar no repositório:
+Nunca colocar no repositório:
 
 - dados reais de clientes;
-- NIF/IBAN/documentos contabilísticos;
-- passwords;
-- tokens;
-- chaves privadas;
+- NIF/NISS/IBAN reais;
+- documentos contabilísticos;
+- passwords/PINs/códigos 2FA;
+- tokens ou chaves privadas;
 - `.env` real;
 - dumps/backups de produção.
-
-## Portefólio
-
-O projeto passa a demonstrar competências em:
-
-- análise de requisitos;
-- frontend e UX;
-- PostgreSQL e modelação relacional;
-- SQL/PLpgSQL;
-- constraints, índices e triggers;
-- RBAC e Row-Level Security;
-- auditoria;
-- least privilege;
-- security/privacy by design;
-- Git/GitHub e Pull Requests;
-- documentação técnica;
-- evolução de um projeto para utilização real.
 
 ## Autor / manutenção técnica
 
