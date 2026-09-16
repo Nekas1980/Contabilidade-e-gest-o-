@@ -26,6 +26,7 @@ for (const [file, html] of htmlCache) {
     ['mailto:', 'ligação direta para e-mail'],
     ['ctcontabilidadeegestao@gmail.com', 'endereço privado de e-mail'],
     ['928207611', 'número de contacto privado'],
+    ['internal/', 'referência à área interna'],
   ];
 
   for (const [needle, label] of forbidden) {
@@ -62,10 +63,28 @@ for (const [file, html] of htmlCache) {
   }
 }
 
+const internalFile = 'internal/ficha-cliente.html';
+if (!fs.existsSync(path.join(root, internalFile))) {
+  fail(`${internalFile}: protótipo interno em falta.`);
+} else {
+  const internalHtml = read(internalFile);
+  if (!/<meta\s+name=["']robots["']\s+content=["']noindex,nofollow["']/i.test(internalHtml)) {
+    fail(`${internalFile}: deve declarar noindex,nofollow.`);
+  }
+  if (/<input[^>]+type=["']password["']/i.test(internalHtml)) {
+    fail(`${internalFile}: não pode conter campos de password.`);
+  }
+}
+
+const pagesWorkflow = read('.github/workflows/pages.yml');
+if (/\bcp\b[^\n]*\binternal\b/i.test(pagesWorkflow) || /_site\/internal/i.test(pagesWorkflow)) {
+  fail('.github/workflows/pages.yml: a área internal/ não pode ser copiada para o GitHub Pages.');
+}
+
 if (errors.length) {
   console.error('Falhas encontradas:');
   for (const error of errors) console.error(`- ${error}`);
   process.exit(1);
 }
 
-console.log(`Validação concluída: ${publicHtml.length} páginas verificadas, sem ligações internas partidas nem contactos diretos expostos.`);
+console.log(`Validação concluída: ${publicHtml.length} páginas públicas verificadas, área interna excluída e sem contactos diretos expostos.`);
